@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @RestController
 public class TestController {
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public Map<String,Object> login(@RequestBody String str){
         Map<String, Object> map = new HashMap<>(16);
         try{

@@ -19,7 +19,7 @@ import java.util.Map;
 public class JwtInteceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>(16);
         //获取请求头中的令牌
         String token = request.getHeader("token");
 
