@@ -1,14 +1,12 @@
 package com.das.controller;
 
+import com.das.entity.Page;
 import com.das.entity.User;
 import com.das.service.UserService;
 import com.das.utils.JwtUtils;
 import com.das.utils.State;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +21,7 @@ public class UserController {
     private UserService userService;
     @PostMapping("/login")
     public Map<String,Object> login(@RequestBody User user){
-        user.toString();
-        Map<String, Object> map = new HashMap<>(16);
+        Map<String, Object> map = new HashMap<>(4);
         try{
             User userDB = userService.login(user);
             Map<String,String> payload = new HashMap<>(16);
@@ -33,9 +30,7 @@ public class UserController {
             payload.put("telephone",userDB.getTelephone());
             //生成JWT令牌
             String token = JwtUtils.getToken(payload);
-            Map<String, Object> meta = State.reState("登录成功", 200);
-            map.put("meta",meta);
-            map.put("data",userDB);
+            map = State.packet(userDB,"登录成功", 200);
             //响应token
             map.put("token",token);
         }catch (Exception e){
@@ -43,5 +38,11 @@ public class UserController {
             map.put("msg",e.getMessage());
         }
         return map;
+    }
+    @GetMapping
+    public Map<String,Object> getUserList(Integer pageNum,Integer pageSize){
+        Page<User> page = new Page(pageNum,pageSize);
+
+        return null;
     }
 }

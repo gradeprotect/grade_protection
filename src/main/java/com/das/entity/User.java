@@ -17,5 +17,5 @@ public class User {
     private String telephone;
     private String email;
     private Integer authority;
-    private Integer department_id;
+    private Department department;
 }
