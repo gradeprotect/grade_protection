@@ -18,7 +18,6 @@ public class Page<T> {
      * page:当前页数页
      * size:每页总条数
      * total:总记录数
-     * startNum:起始记录数
      * rows:返回记录集合
      */
     private Integer pageNum;
