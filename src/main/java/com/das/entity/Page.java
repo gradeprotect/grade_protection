@@ -21,7 +21,7 @@ public class Page<T> {
      * rows:返回记录集合
      */
     private Integer pageNum;
-    private Integer size;
+    private Integer pageSize;
     private Integer total;
     private List<T> rows;
     public Page(Integer pageNum,Integer size){
