@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.das.mapper.UserMapper">
+    <resultMap id="baseUser" type="User">
+        <id property="id" column="uid"/>
+        <result property="name" column="uname"/>
+        <result property="password" column="password"/>
+        <result property="telephone" column="telephone"/>
+        <result property="email" column="email"/>
+        <association property="department" javaType="com.das.entity.Department">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="principal_name" column="principal_name"/>
+            <result property="principal_telephone" column="principal_telephone"/>
+            <result property="principal_email" column="principal_email"/>
+            <result property="principal_title" column="principal_title"/>
+            <result property="principal_office_telephone" column="principal_office_telephone"/>
+        </association>
+    </resultMap>
+    <select id="login" parameterType="User" resultMap="baseUser">
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,
+         d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
+          from user as u,department as d where u.id = #{id} and u.password = #{password} and u.department_id=d.id
+    </select>
+    <select id="getUserList" parameterType="Integer" resultMap="baseUser">
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,
+         d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
+          from user as u,department as d where u.id = 10000 and u.password = 'abc123456' and u.department_id=d.id
+    </select>
+</mapper>
