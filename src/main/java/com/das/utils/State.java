@@ -7,10 +7,17 @@ import java.util.Map;
  * @author Tim
  */
 public class State {
-    public static Map<String,Object> reState(String msg, Integer state){
+    private static Map<String,Object> reState(String msg,Integer state){
         Map<String,Object> map = new HashMap<>(2);
         map.put("msg",msg);
         map.put("status",state);
         return map;
+    }
+
+    public static Map<String, Object> packet(Object obj,String msg,int state){
+        Map<String,Object> ans = new HashMap<>(4);
+        ans.put("data",obj);
+        ans.put("status",reState(msg,state));
+        return ans;
     }
 }
