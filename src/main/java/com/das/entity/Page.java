@@ -26,6 +26,6 @@ public class Page<T> {
     private List<T> rows;
     public Page(Integer pageNum,Integer size){
         this.pageNum = pageNum;
-        this.size = size;
+        this.pageSize = size;
     }
 }
