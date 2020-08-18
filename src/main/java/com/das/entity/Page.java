@@ -15,13 +15,18 @@ import java.util.List;
 @NoArgsConstructor
 public class Page<T> {
     /**
-     * page:分页起始页
+     * page:当前页数页
      * size:每页总条数
      * total:总记录数
+     * startNum:起始记录数
      * rows:返回记录集合
      */
-    private Integer page;
+    private Integer pageNum;
     private Integer size;
     private Integer total;
     private List<T> rows;
+    public Page(Integer pageNum,Integer size){
+        this.pageNum = pageNum;
+        this.size = size;
+    }
 }
