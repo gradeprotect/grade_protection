@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.das.utils.JwtUtils;
+import com.das.utils.State;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -22,7 +23,6 @@ public class JwtInteceptor implements HandlerInterceptor {
         Map<String,Object> map = new HashMap<>(16);
         //获取请求头中的令牌
         String token = request.getHeader("token");
-
         try{
             //验证令牌
             JwtUtils.verify(token);
@@ -30,22 +30,20 @@ public class JwtInteceptor implements HandlerInterceptor {
             return true;
         }catch (SignatureVerificationException e){//签名不一致
             e.printStackTrace();
-            map.put("msg","签名不一致");
+            map = State.packet(null,"签名不一致",403);
         }catch (TokenExpiredException e){//过期
             e.printStackTrace();
-            map.put("msg","令牌过期");
+            map = State.packet(null,"令牌过期",403);
         }catch (AlgorithmMismatchException e){//算法不匹配
             e.printStackTrace();
-            map.put("msg","算法不匹配");
+            map = State.packet(null,"算法不匹配",403);
         }catch (InvalidClaimException e){//失效的payload异常
             e.printStackTrace();
-            map.put("msg","失效的payload异常");
+            map = State.packet(null,"失效的payload异常",403);
         }catch (Exception e){
             e.printStackTrace();
-            map.put("msg","无效签名");
+            map = State.packet(null,"无效签名",403);
         }
-        //设置状态
-        map.put("state",false);
         //将map转位json
         String json = new ObjectMapper().writeValueAsString(map);
         response.setContentType("application/json;charset=UTF-8");

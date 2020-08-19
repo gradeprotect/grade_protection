@@ -5,6 +5,8 @@ import com.das.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Tim
  */
@@ -15,5 +17,20 @@ public class UserService {
 
     public User login(User user){
         return userMapper.login(user);
+    }
+    public List<User> getUserList(Integer num,Integer pageSize){
+        return userMapper.getUserList(num,pageSize);
+    }
+    public void updateUser(User user){
+        userMapper.updateUser(user);
+    }
+    public User getUserById(Integer id){
+        return userMapper.getUserById(id);
+    }
+    public void updateUserPassword(String password,Integer id){
+        userMapper.updateUserPassword(password,id);
+    }
+    public void insertUser(User user){
+        userMapper.insertUser(user);
     }
 }

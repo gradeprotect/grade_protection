@@ -1,5 +1,6 @@
 package com.das.controller;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.das.entity.Page;
 import com.das.entity.User;
 import com.das.service.UserService;
@@ -7,14 +8,15 @@ import com.das.utils.JwtUtils;
 import com.das.utils.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Tim
  */
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -25,6 +27,7 @@ public class UserController {
         try{
             User userDB = userService.login(user);
             Map<String,String> payload = new HashMap<>(16);
+            payload.put("id",Integer.toString(userDB.getId()));
             payload.put("name",userDB.getName());
             payload.put("email",userDB.getEmail());
             payload.put("telephone",userDB.getTelephone());
@@ -34,15 +37,56 @@ public class UserController {
             //响应token
             map.put("token",token);
         }catch (Exception e){
-            map.put("state",false);
-            map.put("msg",e.getMessage());
+            map = State.packet(null, "用户名或密码错误", 422);
         }
         return map;
     }
     @GetMapping
-    public Map<String,Object> getUserList(Integer pageNum,Integer pageSize){
-        Page<User> page = new Page(pageNum,pageSize);
-
-        return null;
+    public Map<String,Object> getUserList(Integer pagenum,Integer pagesize){
+        Page<User> page = new Page(pagenum,pagesize);
+        List<User> userList = userService.getUserList(pagenum * (pagenum - 1), pagesize);
+        Map<String, Object> packet = State.packet(userList, "获取成功", 200);
+        return packet;
+    }
+    @PutMapping("/update")
+    public Map<String, Object> updateUser(@RequestBody User user,@RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>(16);
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        String id = tokenInfo.getClaim("id").asString();
+        User userOld = userService.getUserById(user.getId());
+        if (!user.getAuthority().equals(userOld.getAuthority())) {
+            if (userService.getUserById(Integer.parseInt(id)).getAuthority() != 0) {
+                map = State.packet(null, "您不是超级管理员，不能修改用户权限", 403);
+            }
+            if (userOld.getAuthority() == 0) {
+                map = State.packet(null, "您不能修改超级管理员的权限", 403);
+            }
+            return map;
+        }
+        userService.updateUser(user);
+        User userDB = userService.getUserById(user.getId());
+        map = State.packet(userDB, "修改成功", 200);
+        return map;
+    }
+    @PutMapping("/update/password")
+    public Map<String,Object> updateUserPassword(@RequestBody User user){
+        System.out.println(user.getId()+":"+user.getPassword());
+        userService.updateUserPassword(user.getPassword(),user.getId());
+        User userDB = userService.getUserById(user.getId());
+        Map<String, Object> map = State.packet(userDB, "修改成功", 200);
+        return map;
+    }
+    @PostMapping
+    public Map<String,Object> insertUser(@RequestBody User user){
+        userService.insertUser(user);
+        User userDB = userService.getUserById(user.getId());
+        Map<String, Object> map = State.packet(userDB, "添加成功", 201);
+        return map;
+    }
+    @GetMapping("/{id}")
+    public Map<String,Object> getUserById(@PathVariable("id") Integer id){
+        User userDB = userService.getUserById(id);
+        Map<String, Object> map = State.packet(userDB, "获取成功", 200);
+        return map;
     }
 }

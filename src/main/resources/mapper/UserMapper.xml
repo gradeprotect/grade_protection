@@ -7,6 +7,7 @@
         <result property="password" column="password"/>
         <result property="telephone" column="telephone"/>
         <result property="email" column="email"/>
+        <result property="authority" column="authority"/>
         <association property="department" javaType="com.das.entity.Department">
             <id property="id" column="id"/>
             <result property="name" column="name"/>
@@ -18,13 +19,29 @@
         </association>
     </resultMap>
     <select id="login" parameterType="User" resultMap="baseUser">
-        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
          d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
           from user as u,department as d where u.id = #{id} and u.password = #{password} and u.department_id=d.id
     </select>
     <select id="getUserList" parameterType="Integer" resultMap="baseUser">
-        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
          d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
-          from user as u,department as d where u.department_id=d.id limit #{startNun},#{pageSize}
+          from user as u,department as d where u.department_id=d.id limit #{param1},#{param2}
     </select>
+    <update id="updateUser" parameterType="com.das.entity.User" >
+        update user set name = #{name},authority = #{authority},email = #{email},telephone=#{telephone},department_id=#{department.id,jdbcType=SMALLINT} where id = #{id}
+    </update>
+    <select id="getUserById" parameterType="Integer" resultMap="baseUser">
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
+         d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
+          from user as u,department as d
+          where u.id = #{id} and u.department_id=d.id
+    </select>
+    <update id="updateUserPassword">
+        update user set password = #{param1} where id = #{param2}
+    </update>
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user(name,password,telephone,email,authority,department_id)
+        values (#{name},#{password},#{telephone},#{email},#{authority},#{department.id,jdbcType=SMALLINT})
+    </insert>
 </mapper>
