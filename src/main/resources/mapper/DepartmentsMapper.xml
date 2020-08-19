@@ -3,11 +3,15 @@
 <mapper namespace="com.das.mapper.DepartmentsMapper">
 
     <select id="findAll" resultType="com.das.entity.Department">
-        select * from department
+        select * from department limit #{param1}, #{param2}
     </select>
 
     <select id="findById" resultType="com.das.entity.Department" parameterType="int">
         select * from department where id = #{id}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from department
     </select>
 
     <insert id="add" parameterType="com.das.entity.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -16,7 +20,7 @@
     </insert>
 
     <update id="update" parameterType="com.das.entity.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        update department set name=#{name},principal_name=#{principal_name},principal_telephone=#{principal_name},
+        update department set name=#{name},principal_name=#{principal_name},principal_telephone=#{principal_telephone},
                               principal_email=#{principal_email},principal_title=#{principal_title},
                               principal_office_telephone=#{principal_office_telephone} where id=#{id}
     </update>

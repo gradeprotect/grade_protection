@@ -25,6 +25,12 @@ public interface DepartmentsMapper {
     List<Department> findAll(Integer pagenum,Integer pagesize);
 
     /**
+     * 统计所有部门数
+     * @return Integer
+     */
+    Integer count();
+
+    /**
      * 通过 id 查找部门
      * @param id int
      * @return Department

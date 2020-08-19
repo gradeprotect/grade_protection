@@ -17,7 +17,11 @@ public class DepartmentService {
     private DepartmentsMapper departmentsMapper;
 
     public List<Department> findAll(Integer pagenum,Integer pagesize){
-        return departmentsMapper.findAll(pagenum,pagesize);
+        return departmentsMapper.findAll((pagenum-1)*pagesize,pagesize);
+    }
+
+    public Integer count(){
+        return departmentsMapper.count();
     }
 
     public Department findById(int id){
