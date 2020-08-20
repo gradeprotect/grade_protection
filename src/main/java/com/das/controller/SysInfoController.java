@@ -53,6 +53,7 @@ public class SysInfoController {
     public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile multipartFile,@RequestHeader("Authorization") String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        System.out.println(multipartFile.getSize());
         List<SysInfo> sysInfos = sysInfoService.addByExcel(multipartFile,importer_id);
         return State.packet(sysInfos,"批量导入成功",201);
     }

@@ -1,19 +1,14 @@
 package com.das.controller;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.das.entity.Department;
 import com.das.entity.Page;
-import com.das.entity.User;
 import com.das.service.DepartmentService;
 import com.das.service.UserService;
 import com.das.utils.JudgAuthority;
-import com.das.utils.JwtUtils;
 import com.das.utils.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,9 +35,23 @@ public class DepartmentController {
         return State.packet(page,"获取成功",200);
     }
 
+    @RequestMapping(path = "/{id}",method = RequestMethod.DELETE)
+    public Map<String,Object> deleteById(@PathVariable("id") Integer id){
+        departmentService.deleteById(id);
+        return State.packet(null,"删除成功",204);
+    }
+
     @RequestMapping(path = "/findByName/{name}",method = RequestMethod.GET)
-    public Map<String,Object> findByName(@PathVariable String name){
-        return State.packet(departmentService.findByName(name),"获取成功",200);
+    public Map<String,Object> findByName(@PathVariable String name,Integer pagenum,Integer pagesize){
+        Page<Department> page = new Page<>(pagenum,pagesize);
+        page.setRows(departmentService.findByName(name,pagenum,pagesize));
+        page.setTotal(departmentService.countByName(name));
+        return State.packet(page,"获取成功",200);
+    }
+
+    @RequestMapping(path = "/findById/{id}",method = RequestMethod.GET)
+    public Map<String,Object> findById(@PathVariable("id") Integer id){
+        return State.packet(departmentService.findById(id), "获取成功", 200);
     }
 
     @RequestMapping(path = "/getNames",method = RequestMethod.GET)

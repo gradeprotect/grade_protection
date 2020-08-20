@@ -33,6 +33,7 @@ public class SysInfoService {
             e.printStackTrace();
         }
         for (int i=0;i<sysInfos.size();i++){
+            System.out.println(sysInfos.get(i).toString());
             sysInfoMapper.add(sysInfos.get(i));
         }
         return sysInfos;

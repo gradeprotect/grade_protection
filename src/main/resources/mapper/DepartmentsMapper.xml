@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.das.mapper.DepartmentsMapper">
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update department set isdelete=true where id = #{id}
+    </update>
 
     <select id="findAll" resultType="com.das.entity.Department">
         select * from department where isdelete is false limit #{param1}, #{param2}
@@ -18,8 +21,12 @@
         select name from department where isdelete is false
     </select>
 
-    <select id="findByName" resultType="com.das.entity.Department" parameterType="java.lang.String">
-        select * from department where name = #{name} and isdelete is false
+    <select id="findByName" resultType="com.das.entity.Department">
+        select * from department where name like concat('%',#{name},'%') and isdelete is false limit #{param2},#{param3}
+    </select>
+
+    <select id="countByName" resultType="java.lang.Integer">
+        select count(*) from department where name like concat('%', #{name},'%') and isdelete is false
     </select>
 
     <insert id="add" parameterType="com.das.entity.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

@@ -118,41 +118,41 @@ public class ReadExcelContents {
         if (colNum != 35) {
             return false;
         }
-        return "name".equals(CellReference.convertNumToColString(0)) &&
-                "grade_protect_level".equals(CellReference.convertNumToColString(1)) &&
-                "department".equals(CellReference.convertNumToColString(2)) &&
-                "business_type".equals(CellReference.convertNumToColString(3)) &&
-                "business_desc".equals(CellReference.convertNumToColString(4)) &&
-                "service_area".equals(CellReference.convertNumToColString(5)) &&
-                "service_obj".equals(CellReference.convertNumToColString(6)) &&
-                "network".equals(CellReference.convertNumToColString(7)) &&
-                "sys_interconnect".equals(CellReference.convertNumToColString(8)) &&
-                "safety_num".equals(CellReference.convertNumToColString(9)) &&
-                "domestic_safety_num".equals(CellReference.convertNumToColString(10)) &&
-                "network_num".equals(CellReference.convertNumToColString(11)) &&
-                "domestic_network_num".equals(CellReference.convertNumToColString(12)) &&
-                "operate_sys_num".equals(CellReference.convertNumToColString(13)) &&
-                "domestic_operate_sys_num".equals(CellReference.convertNumToColString(14)) &&
-                "database_num".equals(CellReference.convertNumToColString(15)) &&
-                "domestic_database_num".equals(CellReference.convertNumToColString(16)) &&
-                "server_num".equals(CellReference.convertNumToColString(17)) &&
-                "domestic_server_num".equals(CellReference.convertNumToColString(18)) &&
-                "rank_evaluation".equals(CellReference.convertNumToColString(19)) &&
-                "risk_assessment".equals(CellReference.convertNumToColString(20)) &&
-                "disaster_recover".equals(CellReference.convertNumToColString(21)) &&
-                "emergency_response".equals(CellReference.convertNumToColString(22)) &&
-                "sys_integration".equals(CellReference.convertNumToColString(23)) &&
-                "security_advisory".equals(CellReference.convertNumToColString(24)) &&
-                "security_train".equals(CellReference.convertNumToColString(25)) &&
-                "evaluate_firm_name".equals(CellReference.convertNumToColString(26)) &&
-                "put_into_time".equals(CellReference.convertNumToColString(27)) &&
-                "business_info_level".equals(CellReference.convertNumToColString(28)) &&
-                "sys_service_level".equals(CellReference.convertNumToColString(29)) &&
-                "info_sys_level".equals(CellReference.convertNumToColString(30)) &&
-                "rank_time".equals(CellReference.convertNumToColString(31)) &&
-                "expert_review".equals(CellReference.convertNumToColString(32)) &&
-                "competent_authority_name".equals(CellReference.convertNumToColString(33)) &&
-                "sys_rate_report".equals(CellReference.convertNumToColString(34));
+        return "name".equals(getCellFormatValue(row.getCell(0))) &&
+                "grade_protect_level".equals(getCellFormatValue(row.getCell(1))) &&
+                "department".equals(getCellFormatValue(row.getCell(2))) &&
+                "business_type".equals(getCellFormatValue(row.getCell(3))) &&
+                "business_desc".equals(getCellFormatValue(row.getCell(4))) &&
+                "service_area".equals(getCellFormatValue(row.getCell(5))) &&
+                "service_obj".equals(getCellFormatValue(row.getCell(6))) &&
+                "network".equals(getCellFormatValue(row.getCell(7))) &&
+                "sys_interconnect".equals(getCellFormatValue(row.getCell(8))) &&
+                "safety_num".equals(getCellFormatValue(row.getCell(9))) &&
+                "domestic_safety_num".equals(getCellFormatValue(row.getCell(10))) &&
+                "network_num".equals(getCellFormatValue(row.getCell(11))) &&
+                "domestic_network_num".equals(getCellFormatValue(row.getCell(12))) &&
+                "operate_sys_num".equals(getCellFormatValue(row.getCell(13))) &&
+                "domestic_operate_sys_num".equals(getCellFormatValue(row.getCell(14))) &&
+                "database_num".equals(getCellFormatValue(row.getCell(15))) &&
+                "domestic_database_num".equals(getCellFormatValue(row.getCell(16))) &&
+                "server_num".equals(getCellFormatValue(row.getCell(17))) &&
+                "domestic_server_num".equals(getCellFormatValue(row.getCell(18))) &&
+                "rank_evaluation".equals(getCellFormatValue(row.getCell(19))) &&
+                "risk_assessment".equals(getCellFormatValue(row.getCell(20))) &&
+                "disaster_recover".equals(getCellFormatValue(row.getCell(21))) &&
+                "emergency_response".equals(getCellFormatValue(row.getCell(22))) &&
+                "sys_integration".equals(getCellFormatValue(row.getCell(23))) &&
+                "security_advisory".equals(getCellFormatValue(row.getCell(24))) &&
+                "security_train".equals(getCellFormatValue(row.getCell(25))) &&
+                "evaluate_firm_name".equals(getCellFormatValue(row.getCell(26))) &&
+                "put_into_time".equals(getCellFormatValue(row.getCell(27))) &&
+                "business_info_level".equals(getCellFormatValue(row.getCell(28))) &&
+                "sys_service_level".equals(getCellFormatValue(row.getCell(29))) &&
+                "info_sys_level".equals(getCellFormatValue(row.getCell(30))) &&
+                "rank_time".equals(getCellFormatValue(row.getCell(31))) &&
+                "expert_review".equals(getCellFormatValue(row.getCell(32))) &&
+                "competent_authority_name".equals(getCellFormatValue(row.getCell(33))) &&
+                "sys_rate_report".equals(getCellFormatValue(row.getCell(34)));
     }
 
     /**

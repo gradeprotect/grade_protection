@@ -25,6 +25,12 @@ public interface DepartmentsMapper {
     List<Department> findAll(Integer pagenum,Integer pagesize);
 
     /**
+     * 根据id删除部门
+     * @param id Integer
+     */
+    void deleteById(Integer id);
+
+    /**
      * 获取全部的部门名字
      * @return List<Integer>
      */
@@ -35,7 +41,14 @@ public interface DepartmentsMapper {
      * @param name String
      * @return Department
      */
-    Department findByName(String name);
+    List<Department> findByName(String name,Integer pagenum,Integer pagesize);
+
+    /**
+     * 通过名字计数
+     * @param name String
+     * @return Integer
+     */
+    Integer countByName(String name);
 
     /**
      * 统计所有部门数
