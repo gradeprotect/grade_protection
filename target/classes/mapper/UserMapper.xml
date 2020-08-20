@@ -21,12 +21,12 @@
     <select id="login" parameterType="User" resultMap="baseUser">
         select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
          d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
-          from user as u,department as d where u.id = #{id} and u.password = #{password} and u.department_id=d.id
+          from user as u,department as d where u.id = #{id} and u.password = #{password} and u.department_id=d.id and u.isdelete = 0
     </select>
     <select id="getUserList" parameterType="Integer" resultMap="baseUser">
         select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
          d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
-          from user as u,department as d where u.department_id=d.id limit #{param1},#{param2}
+          from user as u,department as d where u.department_id=d.id and u.isdelete = 0 limit #{param1},#{param2}
     </select>
     <update id="updateUser" parameterType="com.das.entity.User" >
         update user set name = #{name},authority = #{authority},email = #{email},telephone=#{telephone},department_id=#{department.id,jdbcType=SMALLINT} where id = #{id}
@@ -44,4 +44,15 @@
         insert into user(name,password,telephone,email,authority,department_id)
         values (#{name},#{password},#{telephone},#{email},#{authority},#{department.id,jdbcType=SMALLINT})
     </insert>
+    <select id="getAllUserCount" resultType="Integer">
+        select count(*) from user where isdelete is false
+    </select>
+    <select id="getUserByName" resultMap="baseUser">
+        select u.id as uid,u.name as uname,u.password,u.telephone,u.email,u.authority,
+         d.id,d.name,d.principal_name,d.principal_telephone,d.principal_email,d.principal_title,d.principal_office_telephone
+          from user u,department d where u.name like concat('%',#{param1},'%') and u.isdelete is false and u.department_id = d.id limit #{param2},#{param3}
+    </select>
+    <select id="getUserByNameCount" resultType="Integer">
+        select count(*) from user where name like concat('%',#{param1},'%') and isdelete is false
+    </select>
 </mapper>

@@ -33,4 +33,13 @@ public class UserService {
     public void insertUser(User user){
         userMapper.insertUser(user);
     }
+    public Integer getAllUserCount(){
+        return userMapper.getAllUserCount();
+    }
+    public List<User> getUserByName(String keyword,Integer num,Integer pageSize){
+        return userMapper.getUserByName(keyword,num,pageSize);
+    }
+    public Integer getUserByNameCount(String keyword){
+        return userMapper.getUserByNameCount(keyword);
+    }
 }

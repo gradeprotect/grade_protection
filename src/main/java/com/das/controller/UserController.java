@@ -44,12 +44,17 @@ public class UserController {
     @GetMapping
     public Map<String,Object> getUserList(Integer pagenum,Integer pagesize){
         Page<User> page = new Page(pagenum,pagesize);
-        List<User> userList = userService.getUserList(pagenum * (pagenum - 1), pagesize);
-        Map<String, Object> packet = State.packet(userList, "获取成功", 200);
+        List<User> userList = userService.getUserList(pagesize * (pagenum - 1), pagesize);
+        Integer allUserCount = userService.getAllUserCount();
+        page.setTotal(allUserCount);
+        page.setPageNum(pagenum);
+        page.setPageSize(pagesize);
+        page.setRows(userList);
+        Map<String, Object> packet = State.packet(page, "获取成功", 200);
         return packet;
     }
     @PutMapping("/update")
-    public Map<String, Object> updateUser(@RequestBody User user,@RequestHeader("token") String token) {
+    public Map<String, Object> updateUser(@RequestBody User user,@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<>(16);
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         String id = tokenInfo.getClaim("id").asString();
@@ -63,30 +68,59 @@ public class UserController {
             }
             return map;
         }
+        if(userOld.getAuthority()<Integer.parseInt(id)){
+            map = State.packet(null, "您不能修改权限比你高的用户信息", 403);
+            return map;
+        }
         userService.updateUser(user);
         User userDB = userService.getUserById(user.getId());
         map = State.packet(userDB, "修改成功", 200);
         return map;
     }
     @PutMapping("/update/password")
-    public Map<String,Object> updateUserPassword(@RequestBody User user){
-        System.out.println(user.getId()+":"+user.getPassword());
+    public Map<String,Object> updateUserPassword(@RequestBody User user,@RequestHeader("Authorization") String token){
+        Map<String, Object> map = new HashMap<>(16);
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        int id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        if(user.getAuthority()<id){
+            map = State.packet(null, "您不能修改权限比你高的用户信息", 403);
+            return map;
+        }
         userService.updateUserPassword(user.getPassword(),user.getId());
         User userDB = userService.getUserById(user.getId());
-        Map<String, Object> map = State.packet(userDB, "修改成功", 200);
+        map = State.packet(userDB, "修改成功", 200);
         return map;
     }
     @PostMapping
-    public Map<String,Object> insertUser(@RequestBody User user){
+    public Map<String,Object> insertUser(@RequestBody User user,@RequestHeader("Authorization") String token){
+        Map<String, Object> map = new HashMap<>(16);
         userService.insertUser(user);
         User userDB = userService.getUserById(user.getId());
-        Map<String, Object> map = State.packet(userDB, "添加成功", 201);
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        int id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        User userLogin = userService.getUserById(id);
+        if(userLogin.getAuthority()!=0&&(userLogin.getAuthority()>=user.getAuthority())){
+            map = State.packet(userDB, "您不能添加权限和你相同以及权限比你高的用户", 403);
+            return map;
+        }
+        map = State.packet(userDB, "添加成功", 201);
         return map;
     }
     @GetMapping("/{id}")
     public Map<String,Object> getUserById(@PathVariable("id") Integer id){
         User userDB = userService.getUserById(id);
         Map<String, Object> map = State.packet(userDB, "获取成功", 200);
+        return map;
+    }
+    @GetMapping("/name")
+    public Map<String,Object> getUserByName(String keyword,Integer pagenum,Integer pagesize){
+        Page<User> page = new Page<>();
+        List<User> userByName = userService.getUserByName(keyword,pagesize*(pagenum-1),pagesize);
+        page.setPageNum(pagenum);
+        page.setPageSize(pagesize);
+        page.setTotal(userService.getUserByNameCount(keyword));
+        page.setRows(userByName);
+        Map<String, Object> map = State.packet(page, "获取成功", 200);
         return map;
     }
 }

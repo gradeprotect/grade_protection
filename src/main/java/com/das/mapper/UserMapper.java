@@ -50,4 +50,27 @@ public interface UserMapper {
      * @param user 添加用户的信息
      */
     void insertUser(User user);
+
+    /**
+     * 查询用户总数
+     * @return 用户总数
+     */
+    Integer getAllUserCount();
+
+    /**
+     *
+     * 通过用户名模糊查询
+     * @param num 第几页
+     * @param pageSize 每页数量
+     * @param keyword 关键字
+     * @return 复合条件的用户
+     */
+    List<User> getUserByName(String keyword,Integer num,Integer pageSize);
+
+    /**
+     * 通过用户名模糊查询得到的总条数
+     * @param keyword 关键字
+     * @return 总数
+     */
+    Integer getUserByNameCount(String keyword);
 }
