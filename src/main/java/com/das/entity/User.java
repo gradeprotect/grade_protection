@@ -17,18 +17,6 @@ public class User {
     private String telephone;
     private String email;
     private Integer authority;
+    private Integer isdelete;
     private Department department;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", email='" + email + '\'' +
-                ", authority=" + authority +
-                ", department=" + department +
-                '}';
-    }
 }
