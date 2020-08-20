@@ -55,4 +55,7 @@
     <select id="getUserByNameCount" resultType="Integer">
         select count(*) from user where name like concat('%',#{param1},'%') and isdelete is false
     </select>
+    <update id="deleteUserById" parameterType="int">
+        UPDATE user set isdelete=TRUE WHERE id=#{id} AND isdelete=FALSE;
+    </update>
 </mapper>

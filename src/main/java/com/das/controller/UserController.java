@@ -123,4 +123,17 @@ public class UserController {
         Map<String, Object> map = State.packet(page, "获取成功", 200);
         return map;
     }
+
+    @DeleteMapping("/delete/{id}")
+    public Map<String, Object> deleteUserById(@PathVariable("id") Integer id){
+        Map<String, Object> map = new HashMap<>(16);
+        Integer result = userService.deleteUserById(id);
+        if(result==1)
+             map = State.packet(null,"删除成功", 200);
+        else
+            map = State.packet(null,"删除失败", 403);
+        return map;
+    }
+
+
 }

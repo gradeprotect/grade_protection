@@ -73,4 +73,11 @@ public interface UserMapper {
      * @return 总数
      */
     Integer getUserByNameCount(String keyword);
+
+    /**
+     * 通过Id对用户的isdelete字段修改，进行伪删除。
+     * @param id 用户的id
+     * @return
+     */
+    Integer deleteUserById(int id);
 }
