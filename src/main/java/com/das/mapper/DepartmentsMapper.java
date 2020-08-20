@@ -25,6 +25,19 @@ public interface DepartmentsMapper {
     List<Department> findAll(Integer pagenum,Integer pagesize);
 
     /**
+     * 获取全部的部门名字
+     * @return List<Integer>
+     */
+    List<String> getNames();
+
+    /**
+     * 通过名字查询部门信息
+     * @param name String
+     * @return Department
+     */
+    Department findByName(String name);
+
+    /**
      * 统计所有部门数
      * @return Integer
      */

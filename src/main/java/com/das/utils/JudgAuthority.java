@@ -26,7 +26,7 @@ public class JudgAuthority {
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         int id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         User user = userService.getUserById(id);
-        if (user.getAuthority() == 0 && user.getAuthority() == 1) {
+        if (user.getAuthority() == 0 || user.getAuthority() == 1) {
             return true;
         } else {
             return false;

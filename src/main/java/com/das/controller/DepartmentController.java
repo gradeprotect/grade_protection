@@ -31,14 +31,27 @@ public class DepartmentController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Map<String, Object> findAll(Integer pagenum, Integer pagesize){
+        if (pagenum<=0){
+            return State.packet(null,"获取失败，pagenum必须为正整数",400);
+        }
         Page<Department> page = new Page<>(pagenum,pagesize);
         page.setRows(departmentService.findAll(pagenum,pagesize));
         page.setTotal(departmentService.count());
         return State.packet(page,"获取成功",200);
     }
 
+    @RequestMapping(path = "/findByName/{name}",method = RequestMethod.GET)
+    public Map<String,Object> findByName(@PathVariable String name){
+        return State.packet(departmentService.findByName(name),"获取成功",200);
+    }
+
+    @RequestMapping(path = "/getNames",method = RequestMethod.GET)
+    public Map<String,Object> getNames(){
+        return State.packet(departmentService.getNames(),"获取成功",200);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
-    public Map<String, Object> add(@RequestBody Department department,@RequestHeader("token") String token){
+    public Map<String, Object> add(@RequestBody Department department,@RequestHeader("Authorization") String token){
         if (!JudgAuthority.isAdmin(userService,token)){
             return State.packet(null,"添加失败，您的权限不足",403);
         }else {
@@ -48,7 +61,7 @@ public class DepartmentController {
     }
 
     @RequestMapping(path = "/{id}",method = RequestMethod.PUT)
-    public Map<String, Object> update(@RequestBody Department department, @PathVariable("id") int id,@RequestHeader("token") String token){
+    public Map<String, Object> update(@RequestBody Department department, @PathVariable("id") int id,@RequestHeader("Authorization") String token){
         if (!JudgAuthority.isAdmin(userService,token)){
             return State.packet(null,"修改失败，您的权限不足",403);
         }else {

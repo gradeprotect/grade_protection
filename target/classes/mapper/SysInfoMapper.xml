@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.das.mapper.SysInfoMapper">
+    <insert id="add" parameterType="com.das.entity.SysInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into sys_info (name, import_time, importer_id, review_state, grade_protect_level, department_id,
+                              business_type, business_desc, service_area, service_obj, network, sys_interconnect,
+                              safety_num, domestic_safety_num, network_num, domestic_network_num, operate_sys_num,
+                              domestic_operate_sys_num, database_num, domestic_database_num, server_num,
+                              domestic_server_num, rank_evaluation, risk_assessment, disaster_recover,
+                              emergency_response, sys_integration, security_advisory, security_train,
+                              evaluate_firm_name, put_into_time, business_info_level, sys_service_level,
+                              info_sys_level, rank_time, expert_review, competent_authority_name, sys_rate_report)
+        VALUES (#{name}, #{import_time}, #{importer_id}, #{review_state}, #{grade_protect_level}, #{department_id},
+                #{business_type}, #{business_desc}, #{service_area}, #{service_obj}, #{network}, #{sys_interconnect},
+                #{safety_num}, #{domestic_safety_num}, #{network_num}, #{domestic_network_num}, #{operate_sys_num},
+                #{domestic_operate_sys_num}, #{database_num}, #{domestic_database_num}, #{server_num},
+                #{domestic_server_num}, #{rank_evaluation}, #{risk_assessment}, #{disaster_recover},
+                #{emergency_response}, #{sys_integration}, #{security_advisory}, #{security_train},
+                #{evaluate_firm_name}, #{put_into_time}, #{business_info_level}, #{sys_service_level},
+                #{info_sys_level}, #{rank_time}, #{expert_review}, #{competent_authority_name}, #{sys_rate_report})
+    </insert>
+
+    <update id="update" parameterType="com.das.entity.SysInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        update sys_info set name=#{name},import_time=#{import_time},importer_id=#{importer_id},review_state=#{review_state},
+                            grade_protect_level=#{grade_protect_level}, department_id=#{department_id},business_type=#{business_type},
+                            business_desc=#{business_desc}, service_area=#{service_area}, service_obj=#{service_obj},
+                            network=#{network}, sys_interconnect=#{sys_interconnect},safety_num=#{safety_num},
+                            domestic_safety_num=#{domestic_safety_num}, network_num=#{network_num},
+                            domestic_network_num=#{domestic_network_num},operate_sys_num=#{operate_sys_num},
+                            domestic_operate_sys_num=#{domestic_operate_sys_num},database_num=#{database_num},
+                            domestic_database_num=#{domestic_database_num}, server_num=#{server_num},
+                            domestic_server_num=#{domestic_server_num}, rank_evaluation=#{rank_evaluation},
+                            risk_assessment=#{risk_assessment}, disaster_recover=#{disaster_recover},
+                            emergency_response=#{emergency_response}, sys_integration=#{sys_integration},
+                            security_advisory=#{security_advisory}, security_train=#{security_train},
+                            evaluate_firm_name=#{evaluate_firm_name}, put_into_time=#{put_into_time},
+                            business_info_level=#{business_info_level}, sys_service_level=#{sys_service_level},
+                            info_sys_level=#{info_sys_level}, rank_time=#{rank_time}, expert_review=#{expert_review},
+                            competent_authority_name=#{competent_authority_name}, sys_rate_report=#{sys_rate_report}
+        where id = #{id}
+    </update>
+
+    <update id="review" parameterType="com.das.entity.SysInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        update sys_info set reviewer_id=#{reviewer_id},review_state=#{review_state},failure_reason=#{failure_reason},
+                            pass_time=#{pass_time}
+        where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from sys_info
+        where id = #{id}
+    </delete>
+</mapper>

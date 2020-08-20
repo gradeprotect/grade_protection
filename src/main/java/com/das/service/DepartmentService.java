@@ -20,6 +20,14 @@ public class DepartmentService {
         return departmentsMapper.findAll((pagenum-1)*pagesize,pagesize);
     }
 
+    public List<String> getNames(){
+        return departmentsMapper.getNames();
+    }
+
+    public Department findByName(String name){
+        return departmentsMapper.findByName(name);
+    }
+
     public Integer count(){
         return departmentsMapper.count();
     }

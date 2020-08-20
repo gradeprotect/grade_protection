@@ -1,15 +1,19 @@
 package com.das.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * @author 许文滨
  * @date 2020-8-19
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysInfo {
     private Integer id;
     private String name;
