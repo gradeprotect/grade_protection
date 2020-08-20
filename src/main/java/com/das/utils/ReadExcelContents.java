@@ -33,6 +33,7 @@ public class ReadExcelContents {
             if (!isCompliance(row,colNum)){
                 return null;
             }else {
+                System.out.println("++++++++++++++++++++++++++++");
                 //读取数据
                 for (int i=1;i<rowNum;i++){
                     row = sheet.getRow(i);
@@ -98,6 +99,7 @@ public class ReadExcelContents {
                     }
                     break;
                 }
+                case
                 case Cell.CELL_TYPE_STRING:
                     cellValue = cell.getRichStringCellValue().getString();
                     break;
@@ -118,41 +120,45 @@ public class ReadExcelContents {
         if (colNum != 35) {
             return false;
         }
-        return "name".equals(getCellFormatValue(row.getCell(0))) &&
-                "grade_protect_level".equals(getCellFormatValue(row.getCell(1))) &&
-                "department".equals(getCellFormatValue(row.getCell(2))) &&
-                "business_type".equals(getCellFormatValue(row.getCell(3))) &&
-                "business_desc".equals(getCellFormatValue(row.getCell(4))) &&
-                "service_area".equals(getCellFormatValue(row.getCell(5))) &&
-                "service_obj".equals(getCellFormatValue(row.getCell(6))) &&
-                "network".equals(getCellFormatValue(row.getCell(7))) &&
-                "sys_interconnect".equals(getCellFormatValue(row.getCell(8))) &&
-                "safety_num".equals(getCellFormatValue(row.getCell(9))) &&
-                "domestic_safety_num".equals(getCellFormatValue(row.getCell(10))) &&
-                "network_num".equals(getCellFormatValue(row.getCell(11))) &&
-                "domestic_network_num".equals(getCellFormatValue(row.getCell(12))) &&
-                "operate_sys_num".equals(getCellFormatValue(row.getCell(13))) &&
-                "domestic_operate_sys_num".equals(getCellFormatValue(row.getCell(14))) &&
-                "database_num".equals(getCellFormatValue(row.getCell(15))) &&
-                "domestic_database_num".equals(getCellFormatValue(row.getCell(16))) &&
-                "server_num".equals(getCellFormatValue(row.getCell(17))) &&
-                "domestic_server_num".equals(getCellFormatValue(row.getCell(18))) &&
-                "rank_evaluation".equals(getCellFormatValue(row.getCell(19))) &&
-                "risk_assessment".equals(getCellFormatValue(row.getCell(20))) &&
-                "disaster_recover".equals(getCellFormatValue(row.getCell(21))) &&
-                "emergency_response".equals(getCellFormatValue(row.getCell(22))) &&
-                "sys_integration".equals(getCellFormatValue(row.getCell(23))) &&
-                "security_advisory".equals(getCellFormatValue(row.getCell(24))) &&
-                "security_train".equals(getCellFormatValue(row.getCell(25))) &&
-                "evaluate_firm_name".equals(getCellFormatValue(row.getCell(26))) &&
-                "put_into_time".equals(getCellFormatValue(row.getCell(27))) &&
-                "business_info_level".equals(getCellFormatValue(row.getCell(28))) &&
-                "sys_service_level".equals(getCellFormatValue(row.getCell(29))) &&
-                "info_sys_level".equals(getCellFormatValue(row.getCell(30))) &&
-                "rank_time".equals(getCellFormatValue(row.getCell(31))) &&
-                "expert_review".equals(getCellFormatValue(row.getCell(32))) &&
-                "competent_authority_name".equals(getCellFormatValue(row.getCell(33))) &&
-                "sys_rate_report".equals(getCellFormatValue(row.getCell(34)));
+        for (int i=0;i<35;i++){
+            System.out.println("----------------------"+getCellFormatValue(row.getCell(i))+"-----------------");
+        }
+        System.out.println("-------------------------------------------");
+        return "系统名称".equals(getCellFormatValue(row.getCell(0))) &&
+                "等保级别".equals(getCellFormatValue(row.getCell(1))) &&
+                "部门名称".equals(getCellFormatValue(row.getCell(2))) &&
+                "业务类型".equals(getCellFormatValue(row.getCell(3))) &&
+                "业务描述".equals(getCellFormatValue(row.getCell(4))) &&
+                "服务范围".equals(getCellFormatValue(row.getCell(5))) &&
+                "服务对象".equals(getCellFormatValue(row.getCell(6))) &&
+                "网络性质".equals(getCellFormatValue(row.getCell(7))) &&
+                "系统互联情况".equals(getCellFormatValue(row.getCell(8))) &&
+                "安全产品数".equals(getCellFormatValue(row.getCell(9))) &&
+                "国产安全产品数".equals(getCellFormatValue(row.getCell(10))) &&
+                "网络产品数".equals(getCellFormatValue(row.getCell(11))) &&
+                "国产网络产品数".equals(getCellFormatValue(row.getCell(12))) &&
+                "操作系统数".equals(getCellFormatValue(row.getCell(13))) &&
+                "国产操作系统数".equals(getCellFormatValue(row.getCell(14))) &&
+                "数据库数".equals(getCellFormatValue(row.getCell(15))) &&
+                "国产数据库数".equals(getCellFormatValue(row.getCell(16))) &&
+                "服务器数".equals(getCellFormatValue(row.getCell(17))) &&
+                "国产服务器数".equals(getCellFormatValue(row.getCell(18))) &&
+                "等级评测".equals(getCellFormatValue(row.getCell(19))) &&
+                "风险评估".equals(getCellFormatValue(row.getCell(20))) &&
+                "灾难恢复".equals(getCellFormatValue(row.getCell(21))) &&
+                "紧急响应".equals(getCellFormatValue(row.getCell(22))) &&
+                "系统集成".equals(getCellFormatValue(row.getCell(23))) &&
+                "安全咨询".equals(getCellFormatValue(row.getCell(24))) &&
+                "安全培训".equals(getCellFormatValue(row.getCell(25))) &&
+                "等级评测单位名称".equals(getCellFormatValue(row.getCell(26))) &&
+                "投入使用时间".equals(getCellFormatValue(row.getCell(27))) &&
+                "业务信息安全保护等级".equals(getCellFormatValue(row.getCell(28))) &&
+                "系统服务安全保护等级".equals(getCellFormatValue(row.getCell(29))) &&
+                "信息系统安全保护等级".equals(getCellFormatValue(row.getCell(30))) &&
+                "定级时间".equals(getCellFormatValue(row.getCell(31))) &&
+                "专家评审情况".equals(getCellFormatValue(row.getCell(32))) &&
+                "主管部门名称".equals(getCellFormatValue(row.getCell(33))) &&
+                "系统定级报告".equals(getCellFormatValue(row.getCell(34)));
     }
 
     /**
