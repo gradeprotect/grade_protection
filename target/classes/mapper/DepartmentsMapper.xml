@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.das.mapper.DepartmentsMapper">
+    <update id="deleteById" parameterType="java.lang.Integer">
+        update department set isdelete=true where id = #{id}
+    </update>
 
     <select id="findAll" resultType="com.das.entity.Department">
-        select * from department limit #{param1}, #{param2}
+        select * from department where isdelete is false limit #{param1}, #{param2}
     </select>
 
     <select id="findById" resultType="com.das.entity.Department" parameterType="int">
-        select * from department where id = #{id}
+        select * from department where id = #{id} and isdelete is false
     </select>
 
     <select id="count" resultType="java.lang.Integer">
-        select count(*) from department
+        select count(*) from department where isdelete is false
+    </select>
+
+    <select id="getNames" resultType="java.lang.String">
+        select name from department where isdelete is false
+    </select>
+
+    <select id="findByName" resultType="com.das.entity.Department">
+        select * from department where name like concat('%',#{name},'%') and isdelete is false limit #{param2},#{param3}
+    </select>
+
+    <select id="countByName" resultType="java.lang.Integer">
+        select count(*) from department where name like concat('%', #{name},'%') and isdelete is false
     </select>
 
     <insert id="add" parameterType="com.das.entity.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

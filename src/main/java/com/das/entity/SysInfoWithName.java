@@ -1,5 +1,6 @@
 package com.das.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,11 +13,13 @@ import java.util.Date;
 public class SysInfoWithName {
     private Integer id;
     private String name;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date import_time;
     private String importer;
     private String reviewer;
     private Integer review_state;
     private String failure_reason;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date pass_time;
     private Integer grade_protect_level;
     private String department;
@@ -45,10 +48,12 @@ public class SysInfoWithName {
     private Boolean security_advisory;
     private Boolean security_train;
     private String evaluate_firm_name;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date put_into_time;
     private Integer business_info_level;
     private Integer sys_service_level;
     private Integer info_sys_level;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date rank_time;
     private Boolean expert_review;
     private String competent_authority_name;

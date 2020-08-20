@@ -20,6 +20,22 @@ public class DepartmentService {
         return departmentsMapper.findAll((pagenum-1)*pagesize,pagesize);
     }
 
+    public void deleteById(Integer id){
+        departmentsMapper.deleteById(id);
+    }
+
+    public List<String> getNames(){
+        return departmentsMapper.getNames();
+    }
+
+    public Integer countByName(String name){
+        return departmentsMapper.countByName(name);
+    }
+
+    public List<Department> findByName(String name,Integer pagenum,Integer pagesize){
+        return departmentsMapper.findByName(name,(pagenum-1)*pagesize,pagesize);
+    }
+
     public Integer count(){
         return departmentsMapper.count();
     }

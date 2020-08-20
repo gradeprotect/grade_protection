@@ -1,15 +1,20 @@
 package com.das.controller;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.das.entity.SysInfo;
 import com.das.entity.SysInfoWithName;
 import com.das.service.SysInfoService;
 import com.das.service.SysInfoWithNameService;
 import com.das.service.UserService;
 import com.das.utils.JudgAuthority;
+import com.das.utils.JwtUtils;
 import com.das.utils.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +42,20 @@ public class SysInfoController {
         sysInfoService.add(sysInfo);
         SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
         return State.packet(sysInfoWithName,"添加成功",201);
+    }
+
+    /**
+     * 通过 excel 文件导入系统信息
+     * @param multipartFile MultipartFile
+     * @return Map<String,Object>
+     */
+    @RequestMapping(path = "/excel",method = RequestMethod.POST)
+    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile multipartFile,@RequestHeader("Authorization") String token){
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        System.out.println(multipartFile.getSize());
+        List<SysInfo> sysInfos = sysInfoService.addByExcel(multipartFile,importer_id);
+        return State.packet(sysInfos,"批量导入成功",201);
     }
 
     /**
@@ -71,7 +90,7 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/review/{id}",method = RequestMethod.PUT)
-    public Map<String,Object> review(@PathVariable("id") int id,@RequestBody SysInfo sysInfo,@RequestHeader("token") String token){
+    public Map<String,Object> review(@PathVariable("id") int id,@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token){
         if (!JudgAuthority.isAdmin(userService,token)){
             return State.packet(null,"审核失败，您没有权限",403);
         }else {
