@@ -32,9 +32,12 @@ public class SysInfoService {
         }catch (Exception e){
             e.printStackTrace();
         }
-        for (int i=0;i<sysInfos.size();i++){
-            System.out.println(sysInfos.get(i).toString());
-            sysInfoMapper.add(sysInfos.get(i));
+        if (sysInfos==null){
+            return null;
+        }
+        for (SysInfo sysInfo : sysInfos) {
+            System.out.println(sysInfo.toString());
+            sysInfoMapper.add(sysInfo);
         }
         return sysInfos;
     }
