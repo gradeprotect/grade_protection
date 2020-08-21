@@ -141,4 +141,20 @@ public class SysInfoController {
             return State.packet(sysInfoWithName,"审核成功",200);
         }
     }
+
+    /**
+     * 返回集团的各级系统数量
+     * @return map Map
+     */
+    @RequestMapping(path = "/groupGradeNum", method = RequestMethod.GET)
+    public Map<String, Object> gteGroupGradeNum (){
+        Integer grade2num = sysInfoService.getGroupGradeNum(2);
+        Integer grade3num = sysInfoService.getGroupGradeNum(3);
+        Integer grade4num = sysInfoService.getGroupGradeNum(4);
+        Map<String,Object> map = new HashMap<>(3);
+        map.put("grade2num", grade2num);
+        map.put("grade3num", grade3num);
+        map.put("grade4num", grade4num);
+        return State.packet(map,"获取成功",200);
+    }
 }

@@ -73,4 +73,7 @@ public class SysInfoService {
         sysInfoMapper.review(sysInfo);
     }
 
+    public Integer getGroupGradeNum(Integer grade){
+        return sysInfoMapper.getGroupGradeNum(grade);
+    }
 }

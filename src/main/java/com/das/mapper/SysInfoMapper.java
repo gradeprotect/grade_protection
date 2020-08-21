@@ -34,4 +34,11 @@ public interface SysInfoMapper {
      * @param sysInfo SysInfo
      */
     void review(SysInfo sysInfo);
+
+    /**
+     * 获取相应等级的系统总数
+     * @param grade Integer
+     * @return Integer
+     */
+    Integer getGroupGradeNum(Integer grade);
 }

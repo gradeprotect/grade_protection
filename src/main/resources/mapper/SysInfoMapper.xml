@@ -50,4 +50,8 @@
         delete from sys_info
         where id = #{id}
     </delete>
+
+    <select id="getGroupGradeNum" resultType="java.lang.Integer">
+        select count(*) from sys_info where grade_protect_level = #{grade}
+    </select>
 </mapper>
