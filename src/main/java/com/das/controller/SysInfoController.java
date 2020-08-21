@@ -1,5 +1,6 @@
 package com.das.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.das.entity.SysInfo;
 import com.das.entity.SysInfoWithAnnex;
@@ -7,14 +8,12 @@ import com.das.entity.SysInfoWithName;
 import com.das.service.SysInfoService;
 import com.das.service.SysInfoWithNameService;
 import com.das.service.UserService;
-import com.das.utils.JudgAuthority;
-import com.das.utils.JwtUtils;
-import com.das.utils.ReadExcelContents;
-import com.das.utils.State;
+import com.das.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +36,8 @@ public class SysInfoController {
 
     @RequestMapping(method = RequestMethod.POST,path = "/test")
     public boolean Test(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex){
-        System.out.println("------------------"+sysInfoWithAnnex.getSysInfo()+"----------------");
-        System.out.println("++++++++++++++++++"+sysInfoWithAnnex.getMultipartFile().getSize()+"+++++++++");
+        JSONObject jo = JSONObject.parseObject(sysInfoWithAnnex.getSysInfo());
+        SysInfo sysInfo = (SysInfo) JSONObject.toJavaObject(jo,SysInfo.class);
         return true;
     }
 
@@ -48,16 +47,37 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(method = RequestMethod.POST)
-    public Map<String,Object> add(@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token){
+    public Map<String,Object> add(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex,@RequestHeader("Authorization") String token) throws IOException {
+        JSONObject jo = JSONObject.parseObject(sysInfoWithAnnex.getSysInfo());
+        SysInfo sysInfo = (SysInfo) JSONObject.toJavaObject(jo,SysInfo.class);
         System.out.println(sysInfo);
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
+        String annexPath = FileUpload.upload(sysInfoWithAnnex.getMultipartFile());
         sysInfo.setImporter_id(importer_id);
         sysInfo.setImport_time(new Date());
+        sysInfo.setAnnex(annexPath);
         sysInfoService.add(sysInfo);
-        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
         return State.packet(sysInfoWithName,"添加成功",201);
     }
+
+//    /**
+//     * 导入系统信息
+//     * @param sysInfo SysInfo
+//     * @return Map<String,Object>
+//     */
+//    @RequestMapping(method = RequestMethod.POST)
+//    public Map<String,Object> add(@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token){
+//        System.out.println(sysInfo);
+//        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+//        Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
+//        sysInfo.setImporter_id(importer_id);
+//        sysInfo.setImport_time(new Date());
+//        sysInfoService.add(sysInfo);
+//        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
+//        return State.packet(sysInfoWithName,"添加成功",201);
+//    }
 
     /**
      * 通过 excel 文件导入系统信息
@@ -115,6 +135,7 @@ public class SysInfoController {
             return State.packet(null,"审核失败，您没有权限",403);
         }else {
             sysInfo.setId(id);
+            sysInfo.setPass_time(new Date());
             sysInfoService.review(sysInfo);
             SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
             return State.packet(sysInfoWithName,"审核成功",200);

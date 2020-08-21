@@ -7,7 +7,7 @@
                               safety_num, domestic_safety_num, network_num, domestic_network_num, operate_sys_num,
                               domestic_operate_sys_num, database_num, domestic_database_num, server_num,
                               domestic_server_num, rank_evaluation, risk_assessment, disaster_recover,
-                              emergency_response, sys_integration, security_advisory, security_train,
+                              emergency_response, sys_integration, security_advisory, security_train, annex,
                               evaluate_firm_name, put_into_time, business_info_level, sys_service_level,
                               info_sys_level, rank_time, expert_review, competent_authority_name, sys_rate_report)
         VALUES (#{name}, #{import_time}, #{importer_id}, #{review_state}, #{grade_protect_level}, #{department_id},
@@ -15,7 +15,7 @@
                 #{safety_num}, #{domestic_safety_num}, #{network_num}, #{domestic_network_num}, #{operate_sys_num},
                 #{domestic_operate_sys_num}, #{database_num}, #{domestic_database_num}, #{server_num},
                 #{domestic_server_num}, #{rank_evaluation}, #{risk_assessment}, #{disaster_recover},
-                #{emergency_response}, #{sys_integration}, #{security_advisory}, #{security_train},
+                #{emergency_response}, #{sys_integration}, #{security_advisory}, #{security_train}, #{annex},
                 #{evaluate_firm_name}, #{put_into_time}, #{business_info_level}, #{sys_service_level},
                 #{info_sys_level}, #{rank_time}, #{expert_review}, #{competent_authority_name}, #{sys_rate_report})
     </insert>

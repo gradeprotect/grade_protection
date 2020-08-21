@@ -72,4 +72,5 @@ public class SysInfoService {
     public void review(SysInfo sysInfo){
         sysInfoMapper.review(sysInfo);
     }
+
 }
