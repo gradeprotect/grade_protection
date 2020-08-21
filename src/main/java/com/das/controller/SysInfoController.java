@@ -35,12 +35,12 @@ public class SysInfoController {
     @Autowired
     private UserService userService;
 
-//    @RequestMapping(method = RequestMethod.POST,path = "/test")
-//    public boolean Test(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex){
-//        System.out.println("------------------"+sysInfoWithAnnex.getSysInfo()+"----------------");
-//        System.out.println("++++++++++++++++++"+sysInfoWithAnnex.getMultipartFile().getSize()+"+++++++++");
-//        return true;
-//    }
+    @RequestMapping(method = RequestMethod.POST,path = "/test")
+    public boolean Test(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex){
+        System.out.println("------------------"+sysInfoWithAnnex.getSysInfo()+"----------------");
+        System.out.println("++++++++++++++++++"+sysInfoWithAnnex.getMultipartFile().getSize()+"+++++++++");
+        return true;
+    }
 
     /**
      * 导入系统信息

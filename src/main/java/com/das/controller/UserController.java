@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Tim
  */
 @RestController
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 360000)
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -130,12 +130,17 @@ public class UserController {
         Map<String, Object> map = State.packet(page, "获取成功", 200);
         return map;
     }
-    @DeleteMapping("/delete/{id}")
-    public Map<String, Object> deleteUserById(@PathVariable("id") Integer id){
+    @DeleteMapping("/{id}")
+    public Map<String, Object> deleteUserById(@PathVariable("id") Integer id,@RequestHeader("Authorization") String token){
         Map<String, Object> map = new HashMap<>(16);
-        Integer result = userService.deleteUserById(id);
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        int loginUserId = Integer.parseInt(tokenInfo.getClaim("id").asString());
+        //根据token里的ID获取对应用户
+        User userDB = userService.getUserById(loginUserId);
+        Integer result = userService.deleteUserById(id,userDB.getAuthority());
+        System.out.println(userDB.getAuthority()+"-"+id);
         if(result==1){
-            map = State.packet(null,"删除成功", 200);
+            map = State.packet(null,"删除成功", 204);
         }
         else{
             map = State.packet(null,"删除失败", 403);

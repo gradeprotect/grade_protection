@@ -42,5 +42,7 @@ public class UserService {
     public Integer getUserByNameCount(String keyword){
         return userMapper.getUserByNameCount(keyword);
     }
-    public Integer deleteUserById(int id){ return userMapper.deleteUserById(id);}
+    public Integer deleteUserById(Integer id,Integer authority){
+        return userMapper.deleteUserById(id,authority);
+    }
 }

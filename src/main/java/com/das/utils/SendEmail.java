@@ -1,6 +1,7 @@
 package com.das.utils;
 
 import com.sun.mail.util.MailSSLSocketFactory;
+import org.apache.tomcat.jni.File;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -12,7 +13,10 @@ import java.util.Properties;
  * @author Tim
  */
 public class SendEmail {
-
+//    public static void main(String[] args) {
+//        String classesPath=Thread.currentThread().getContextClassLoader().getResource("").getPath().substring(1);
+//        System.out.println(classesPath);
+//    }
     public static void sendEmail(String title, String msg, String receiver) throws MessagingException, GeneralSecurityException {
         //创建一个配置文件并保存
         Properties properties = new Properties();
@@ -67,4 +71,5 @@ public class SendEmail {
         //关闭连接
         transport.close();
     }
+
 }
