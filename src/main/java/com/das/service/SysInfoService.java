@@ -1,6 +1,8 @@
 package com.das.service;
 
+import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
+import com.das.mapper.DepartmentsMapper;
 import com.das.mapper.SysInfoMapper;
 import com.das.utils.ReadExcelContents;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class SysInfoService {
     private SysInfoMapper sysInfoMapper;
     @Autowired
     private ReadExcelContents readExcelContents;
+    @Autowired
+    private DepartmentsMapper departmentsMapper;
 
     public void add(SysInfo sysInfo){
         //数据校验
@@ -79,5 +83,27 @@ public class SysInfoService {
 
     public Integer getDomesticProductNum(String productType){
         return sysInfoMapper.getDomesticProductNum(productType);
+    }
+
+    public Map<String,Integer> getCommittedAndDepartmentNums(){
+        Map<String,Integer> map = new HashMap<>(2);
+        map.put("committed_num", sysInfoMapper.getCommittedNum());
+        map.put("total_dept_num", departmentsMapper.count());
+        return map;
+    }
+
+    public List<DeptGradeStatus> getAllDeptGradeStatus(){
+        List<String> deptNames = departmentsMapper.getNames();
+        List<DeptGradeStatus> allDeptGradeStatus = sysInfoMapper.getAllDeptGradeStatus();
+        // 清除已录入部门，获得未录入部门
+        for (DeptGradeStatus deptGradeStatus: allDeptGradeStatus) {
+            deptNames.remove(deptGradeStatus.getDeptName());
+        }
+        // 对未录入等保信息的部门进行补0
+        for(String deptName: deptNames){
+            DeptGradeStatus deptGradeStatus = new DeptGradeStatus(deptName, 0, 0, 0);
+            allDeptGradeStatus.add(deptGradeStatus);
+        }
+        return allDeptGradeStatus;
     }
 }

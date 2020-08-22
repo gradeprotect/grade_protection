@@ -2,6 +2,7 @@ package com.das.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
 import com.das.entity.SysInfoWithAnnex;
 import com.das.entity.SysInfoWithName;
@@ -169,11 +170,31 @@ public class SysInfoController {
     public Map<String, Object> getDomesticProductNum (String type){
         String productType = type + "_num";
         String domesticProductType = "domestic_" + type + "_num";
-        Integer total_num = sysInfoService.getDomesticProductNum(productType);
-        Integer domestic_num = sysInfoService.getDomesticProductNum(domesticProductType);
-        Map<String,Object> map = new HashMap<>(2);
-        map.put("import_num", total_num);
-        map.put("domestic_num", domestic_num);
+        Integer totalNum = sysInfoService.getDomesticProductNum(productType);
+        Integer domesticNum = sysInfoService.getDomesticProductNum(domesticProductType);
+        Map<String,Integer> map = new HashMap<>(2);
+        map.put("import_num", totalNum);
+        map.put("domestic_num", domesticNum);
         return State.packet(map,"获取成功",200);
+    }
+
+    /**
+     * 获取集团所有部门数以及已提交录入信息的部门数
+     * @return map Map
+     */
+    @RequestMapping(path = "/committedNum", method = RequestMethod.GET)
+    public Map<String, Object> getCommittedNum (){
+        Map<String,Integer> map = sysInfoService.getCommittedAndDepartmentNums();
+        return State.packet(map,"获取成功",200);
+    }
+
+    /**
+     * 获取集团各个部门包含的不同等保等级系统数
+     * @return List<DeptGradeStatus>
+     */
+    @RequestMapping(path = "/allDeptGradeStatus", method = RequestMethod.GET)
+    public Map<String, Object> getAllDeptGradeStatus (){
+        List<DeptGradeStatus> list = sysInfoService.getAllDeptGradeStatus();
+        return State.packet(list,"获取成功",200);
     }
 }

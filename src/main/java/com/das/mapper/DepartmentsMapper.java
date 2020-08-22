@@ -80,7 +80,6 @@ public interface DepartmentsMapper {
     /**
      * 修改部门信息
      * @param department Department
-     * @param id int
      */
     void update(Department department);
 }
