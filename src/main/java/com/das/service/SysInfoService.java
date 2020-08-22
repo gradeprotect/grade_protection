@@ -76,4 +76,8 @@ public class SysInfoService {
     public Integer getGroupGradeNum(Integer grade){
         return sysInfoMapper.getGroupGradeNum(grade);
     }
+
+    public Integer getDomesticProductNum(String productType){
+        return sysInfoMapper.getDomesticProductNum(productType);
+    }
 }

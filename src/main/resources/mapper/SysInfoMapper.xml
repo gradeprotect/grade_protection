@@ -54,4 +54,10 @@
     <select id="getGroupGradeNum" resultType="java.lang.Integer">
         select count(*) from sys_info where grade_protect_level = #{grade}
     </select>
+
+    <select id="getDomesticProductNum" resultType="java.lang.Integer" parameterType="string">
+        <!--字符串传入列名时，要用美元符号$，且参数前加横岗_ 如${_parameter}，不能用${parameter}、${productType}或#{_parameter}等形式-->
+        select sum(${_parameter}) from sys_info
+    </select>
+
 </mapper>

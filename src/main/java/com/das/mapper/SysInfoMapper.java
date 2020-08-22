@@ -41,4 +41,11 @@ public interface SysInfoMapper {
      * @return Integer
      */
     Integer getGroupGradeNum(Integer grade);
+
+    /**
+     * 获取相应类别的安全产品数
+     * @param productType String
+     * @return Integer
+     */
+    Integer getDomesticProductNum(String productType);
 }

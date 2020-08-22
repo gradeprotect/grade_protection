@@ -43,7 +43,7 @@ public class SysInfoController {
 
     /**
      * 导入系统信息
-     * @param sysInfo SysInfo
+     * @param sysInfoWithAnnex SysInfoWithAnnex
      * @return Map<String,Object>
      */
     @RequestMapping(method = RequestMethod.POST)
@@ -143,7 +143,7 @@ public class SysInfoController {
     }
 
     /**
-     * 返回集团的各级系统数量
+     * 获取集团的各级系统数量
      * @return map Map
      */
     @RequestMapping(path = "/groupGradeNum", method = RequestMethod.GET)
@@ -155,6 +155,25 @@ public class SysInfoController {
         map.put("grade2num", grade2num);
         map.put("grade3num", grade3num);
         map.put("grade4num", grade4num);
+        return State.packet(map,"获取成功",200);
+    }
+
+    /**
+     * 获取集团不同类别的安全产品数以及对应的国产安全产品数
+     * 传入参数type的应该为[safety, network, database, server, operate_sys]
+     * 对应的类别为[安全产品、网络产品、数据库、服务器、操作系统]
+     * @param type String
+     * @return map Map
+     */
+    @RequestMapping(path = "/domesticNum", method = RequestMethod.GET)
+    public Map<String, Object> getDomesticProductNum (String type){
+        String productType = type + "_num";
+        String domesticProductType = "domestic_" + type + "_num";
+        Integer total_num = sysInfoService.getDomesticProductNum(productType);
+        Integer domestic_num = sysInfoService.getDomesticProductNum(domesticProductType);
+        Map<String,Object> map = new HashMap<>(2);
+        map.put("import_num", total_num);
+        map.put("domestic_num", domestic_num);
         return State.packet(map,"获取成功",200);
     }
 }
