@@ -113,11 +113,12 @@ public class SysInfoWithNameController {
     @RequestMapping(method = RequestMethod.GET,path = "/countByAuthority")
     public Map<String,Object> countByAuthority(@RequestHeader("Authorization") String token){
         List<Integer> ans = new ArrayList<>();
+        Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
         if (JudgAuthority.isAdmin(userService,token)){
-            ans.add(sysInfoWithNameService.countByState(1));
+            ans = sysInfoWithNameService.countByImporter("admin",importer_id);
         }else {
-            Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
-            ans = sysInfoWithNameService.countByImporter(importer_id);
+
+            ans = sysInfoWithNameService.countByImporter("importer",importer_id);
         }
         return State.packet(ans,"获取成功",200);
     }

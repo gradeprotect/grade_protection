@@ -2,10 +2,7 @@ package com.das.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.das.entity.DeptGradeStatus;
-import com.das.entity.SysInfo;
-import com.das.entity.SysInfoWithAnnex;
-import com.das.entity.SysInfoWithName;
+import com.das.entity.*;
 import com.das.service.SysInfoService;
 import com.das.service.SysInfoWithNameService;
 import com.das.service.UserService;
@@ -17,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 许文滨
@@ -44,7 +38,7 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(method = RequestMethod.POST)
-    public Map<String,Object> add(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex,@RequestHeader("Authorization") String token) throws IOException {
+    public Map<String,Object> add(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex,@RequestHeader("Authorization") String token) throws IOException, GeneralSecurityException, MessagingException {
         JSONObject jo = JSONObject.parseObject(sysInfoWithAnnex.getSysInfo());
         SysInfo sysInfo = (SysInfo) JSONObject.toJavaObject(jo,SysInfo.class);
         System.out.println(sysInfo);
@@ -56,6 +50,12 @@ public class SysInfoController {
         sysInfo.setImport_time(new Date());
         sysInfo.setAnnex(annexPath);
         sysInfoService.add(sysInfo);
+        String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" + sysInfoWithName.getImporter() +
+                "提交了<b>" + sysInfo.getName() + "</b>,请及时审核!";
+        List<String> emails = userService.getEmails();
+        for (String email: emails){
+            SendEmail.sendEmail("审核结果",message,email);
+        }
         return State.packet(sysInfoWithName,"添加成功",201);
     }
 
@@ -82,7 +82,7 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/excel",method = RequestMethod.POST)
-    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile multipartFile,@RequestHeader("Authorization") String token){
+    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile multipartFile,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         List<SysInfo> sysInfos = sysInfoService.addByExcel(multipartFile,importer_id);
@@ -92,6 +92,13 @@ public class SysInfoController {
         Map<String,Object> map = new HashMap<>(2);
         map.put("success",sysInfos);
         map.put("fail", ReadExcelContents.fail);
+        User user = userService.getUserById(importer_id);
+        String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" +
+                user.getName() + "通过excel文件提交了<b>" + sysInfos.size() + "</b>个等级保护信息系统,请及时审核!";
+        List<String> emails = userService.getEmails();
+        for (String email: emails){
+            SendEmail.sendEmail("审核结果",message,email);
+        }
         return State.packet(map,"批量导入成功",201);
     }
 
@@ -102,13 +109,19 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/{id}",method = RequestMethod.PUT)
-    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id,@RequestHeader("Authorization") String token){
+    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         sysInfo.setId(id);
         sysInfo.setImporter_id(importer_id);
         sysInfoService.update(sysInfo);
         SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
+        String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" + sysInfoWithName.getImporter() +
+                "修改了<b>" + sysInfo.getName() + "</b>,请及时审核!";
+        List<String> emails = userService.getEmails();
+        for (String email: emails){
+            SendEmail.sendEmail("审核结果",message,email);
+        }
         return State.packet(sysInfoWithName,"修改成功",200);
     }
 
@@ -139,9 +152,12 @@ public class SysInfoController {
             sysInfoService.review(sysInfo);
             SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
             String message = null;
-            if (sysInfo.getReview_state()==2) message = "审核通过!\n" + "通过时间:" + sysInfo.getPass_time().toString();
-            else message = "审核未通过!\n" + "未通过原因为:" + sysInfo.getFailure_reason();
-            String email = userService.getEmailById(sysInfo.getImporter_id());
+            if (sysInfo.getReview_state()==2) message = "[等级保护信息管理系统]<br>" + sysInfo.getPass_time().toString() +
+                    "<br>您提交的 <b>" + sysInfoWithName.getName() + "</b> 已经通过了审核!";
+            else message = "[等级保护信息管理系统]<br>" + new Date().toString() +
+                    "<br>您提交的 <b>" + sysInfoWithName.getName() + "</b> 未能通过审核，请修改后重新提交<br>" +
+                    "未通过原因:<br>" + sysInfo.getFailure_reason();
+            String email = userService.getEmailById(sysInfoWithName.getImporter_id());
             SendEmail.sendEmail("审核结果",message,email);
 
             return State.packet(sysInfoWithName,"审核成功",200);
@@ -200,6 +216,16 @@ public class SysInfoController {
     @RequestMapping(path = "/allDeptGradeStatus", method = RequestMethod.GET)
     public Map<String, Object> getAllDeptGradeStatus (){
         List<DeptGradeStatus> list = sysInfoService.getAllDeptGradeStatus();
+        return State.packet(list,"获取成功",200);
+    }
+
+    /**
+     * 获取首页动态轮播所需数据
+     * @return List<DeptGradeStatus>
+     */
+    @RequestMapping(path = "/carouselData", method = RequestMethod.GET)
+    public Map<String, Object> getCarouselData (){
+        List<CarouselData> list = sysInfoService.getCarouselData();
         return State.packet(list,"获取成功",200);
     }
 }

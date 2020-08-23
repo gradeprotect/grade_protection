@@ -1,5 +1,6 @@
 package com.das.mapper;
 
+import com.das.entity.CarouselData;
 import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,4 +62,10 @@ public interface SysInfoMapper {
      * @return List<DeptGradeStatus>
      */
     List<DeptGradeStatus> getAllDeptGradeStatus();
+
+    /**
+     * 获取首页动态轮播所需数据
+     * @return List<CarouselData>
+     */
+    List<CarouselData> getCarouselData();
 }

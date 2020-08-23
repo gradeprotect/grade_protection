@@ -87,4 +87,10 @@ public interface UserMapper {
      * @return email
      */
     String getEmailById(Integer id);
+
+    /**
+     * 获取所有管理员email
+     * @return List<String>
+     */
+    List<String> getEmails();
 }

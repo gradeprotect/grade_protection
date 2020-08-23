@@ -47,7 +47,7 @@ public interface SysInfoWithNameMapper {
      * @param importer_id Integer
      * @return Integer
      */
-    List<Integer> countByImporter(Integer importer_id);
+    List<Integer> countByImporter(String authority,Integer importer_id);
 
     /**
      * 根据状态统计系统总数

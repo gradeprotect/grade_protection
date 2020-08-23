@@ -48,4 +48,8 @@ public class UserService {
     public String getEmailById(Integer id){
         return userMapper.getEmailById(id);
     }
+
+    public List<String> getEmails(){
+        return userMapper.getEmails();
+    }
 }

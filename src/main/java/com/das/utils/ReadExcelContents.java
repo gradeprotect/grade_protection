@@ -144,7 +144,7 @@ public class ReadExcelContents {
      * @return boolean
      */
     private static boolean isCompliance(Row row,int colNum){
-        if (colNum != 35) {
+        if (colNum != 36) {
             return false;
         }
 //        for (int i=0;i<35;i++){

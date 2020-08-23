@@ -1,5 +1,6 @@
 package com.das.service;
 
+import com.das.entity.CarouselData;
 import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
 import com.das.mapper.DepartmentsMapper;
@@ -107,5 +108,10 @@ public class SysInfoService {
             allDeptGradeStatus.add(deptGradeStatus);
         }
         return allDeptGradeStatus;
+    }
+
+    public List<CarouselData> getCarouselData(){
+        List<CarouselData> list = sysInfoMapper.getCarouselData();
+        return list;
     }
 }

@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Tim
  */
 @RestController
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 360000)
 @RequestMapping("/user")
 public class UserController {
     @Autowired

@@ -72,4 +72,14 @@
         from sys_info as s, department as d where s.department_id = d.id
         group by d.name
     </select>
+
+    <select id="getCarouselData" resultType="com.das.entity.CarouselData">
+        select s.import_time as 'importTime',
+               d.name as 'departmentName',
+               u.name as 'importerName',
+               s.name as 'systemName'
+        from sys_info as s, user as u, department as d
+        where s.review_state = 1 and s.importer_id = u.id and s.department_id = d.id
+        order by s.import_time desc
+    </select>
 </mapper>

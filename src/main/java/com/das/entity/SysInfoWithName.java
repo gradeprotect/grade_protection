@@ -41,7 +41,7 @@ public class SysInfoWithName {
     private Integer server_num;
     private Integer domestic_server_num;
     private Boolean rank_evaluation;
-    private Boolean risk_evaluation;
+    private Boolean risk_assessment;
     private Boolean disaster_recover;
     private Boolean emergency_response;
     private Boolean sys_integration;
@@ -58,4 +58,5 @@ public class SysInfoWithName {
     private Boolean expert_review;
     private String competent_authority_name;
     private Boolean sys_rate_report;
+    private Integer importer_id;
 }

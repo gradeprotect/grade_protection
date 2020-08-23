@@ -27,8 +27,8 @@ public class SysInfoWithNameService {
         return sysInfoWithNameMapper.count();
     }
 
-    public List<Integer> countByImporter(Integer id){
-        return sysInfoWithNameMapper.countByImporter(id);
+    public List<Integer> countByImporter(String authority,Integer id){
+        return sysInfoWithNameMapper.countByImporter(authority,id);
     }
 
     public SysInfoWithName findById(Integer id){
