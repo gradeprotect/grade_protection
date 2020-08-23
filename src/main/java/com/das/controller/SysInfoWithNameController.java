@@ -75,10 +75,8 @@ public class SysInfoWithNameController {
      * @param pagesize 每页数据数
      * @param grade 等保级别
      * @param name 系统名
-     * @param import_time1 导入时间1
-     * @param import_time2 导入时间2
-     * @param review_time1 审核时间1
-     * @param review_time2 审核时间2
+     * @param import_time 导入时间
+     * @param review_time 审核时间
      * @param token String
      * @return
      */

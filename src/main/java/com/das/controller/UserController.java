@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Tim
  */
 @RestController
-@CrossOrigin(maxAge = 360000)
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -37,6 +37,7 @@ public class UserController {
             //响应token
             map.put("token",token);
         }catch (Exception e){
+            e.printStackTrace();
             map = State.packet(null, "用户名或密码错误", 422);
         }
         return map;
@@ -60,13 +61,7 @@ public class UserController {
         String id = tokenInfo.getClaim("id").asString();
         User userLogin = userService.getUserById(Integer.parseInt(id));
         User userOld = userService.getUserById(user.getId());
-        System.out.println("传过来的user:"+user);
-        System.out.println("数据修改前的user:"+userOld);
-        System.out.println("当前登录的user:"+userLogin);
-        System.out.println(user.getAuthority().equals(userOld.getAuthority()));
-        System.out.println(userOld.getAuthority()+":::"+userLogin.getAuthority());
         if (!user.getAuthority().equals(userOld.getAuthority())) {
-            System.out.println("===========");
             if (userService.getUserById(Integer.parseInt(id)).getAuthority() != 0) {
                 map = State.packet(null, "您不是超级管理员，不能修改用户权限", 403);
             }
@@ -75,9 +70,11 @@ public class UserController {
             }
             return map;
         }
-        if(userOld.getAuthority()<Integer.parseInt(id)){
-            map = State.packet(null, "您不能修改权限比你高的用户信息", 403);
-            return map;
+        if(!userOld.getId().equals(userLogin.getId())){
+            if(userOld.getAuthority()<=userLogin.getAuthority()){
+                map = State.packet(null, "您不能修改权限比你高或权限和你相同的用户信息", 403);
+                return map;
+            }
         }
         userService.updateUser(user);
         User userDB = userService.getUserById(user.getId());
@@ -89,9 +86,13 @@ public class UserController {
         Map<String, Object> map = new HashMap<>(16);
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         int id = Integer.parseInt(tokenInfo.getClaim("id").asString());
-        if(user.getAuthority()<id){
-            map = State.packet(null, "您不能修改权限比你高的用户信息", 403);
-            return map;
+        User userLogin = userService.getUserById(id);
+        User userUpdate = userService.getUserById(user.getId());
+        if(!userLogin.getId().equals(userUpdate.getId())){
+            if(userLogin.getAuthority()>=userUpdate.getAuthority()){
+                map = State.packet(null, "您不能修改权限比你高或权限和你一样的用户密码", 403);
+                return map;
+            }
         }
         userService.updateUserPassword(user.getPassword(),user.getId());
         User userDB = userService.getUserById(user.getId());
@@ -138,7 +139,7 @@ public class UserController {
         //根据token里的ID获取对应用户
         User userDB = userService.getUserById(loginUserId);
         Integer result = userService.deleteUserById(id,userDB.getAuthority());
-        System.out.println(userDB.getAuthority()+"-"+id);
+//        System.out.println(userDB.getAuthority()+"-"+id);
         if(result==1){
             map = State.packet(null,"删除成功", 204);
         }

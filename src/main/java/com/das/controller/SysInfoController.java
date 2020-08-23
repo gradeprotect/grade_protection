@@ -102,8 +102,11 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/{id}",method = RequestMethod.PUT)
-    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id){
+    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id,@RequestHeader("Authorization") String token){
+        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
+        Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         sysInfo.setId(id);
+        sysInfo.setImporter_id(importer_id);
         sysInfoService.update(sysInfo);
         SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
         return State.packet(sysInfoWithName,"修改成功",200);
