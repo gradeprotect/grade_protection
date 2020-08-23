@@ -66,4 +66,10 @@
             and (review_state=2 or review_state=3)
         </where>
     </select>
+
+    <select id="countByImporter" resultType="java.lang.Integer">
+        select count(*) from sys_info_with_name
+        where importer_id = #{importer_id} and (review_state = 1 or review_state = 2)
+        group by review_state
+    </select>
 </mapper>

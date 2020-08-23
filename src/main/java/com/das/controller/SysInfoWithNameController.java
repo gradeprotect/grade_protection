@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 许文滨
@@ -111,5 +108,17 @@ public class SysInfoWithNameController {
                     import_time[0],import_time[1],review_time[0],review_time[1],importer_id));
         }
         return State.packet(page,"获取成功",200);
+    }
+
+    @RequestMapping(method = RequestMethod.GET,path = "/countByAuthority")
+    public Map<String,Object> countByAuthority(@RequestHeader("Authorization") String token){
+        List<Integer> ans = new ArrayList<>();
+        if (JudgAuthority.isAdmin(userService,token)){
+            ans.add(sysInfoWithNameService.countByState(1));
+        }else {
+            Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
+            ans = sysInfoWithNameService.countByImporter(importer_id);
+        }
+        return State.packet(ans,"获取成功",200);
     }
 }

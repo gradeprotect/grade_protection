@@ -139,7 +139,6 @@ public class UserController {
         //根据token里的ID获取对应用户
         User userDB = userService.getUserById(loginUserId);
         Integer result = userService.deleteUserById(id,userDB.getAuthority());
-//        System.out.println(userDB.getAuthority()+"-"+id);
         if(result==1){
             map = State.packet(null,"删除成功", 204);
         }

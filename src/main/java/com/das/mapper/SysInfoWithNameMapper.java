@@ -43,6 +43,13 @@ public interface SysInfoWithNameMapper {
     Integer count();
 
     /**
+     * 根据用户权限和用户id统计系统数
+     * @param importer_id Integer
+     * @return Integer
+     */
+    List<Integer> countByImporter(Integer importer_id);
+
+    /**
      * 根据状态统计系统总数
      * @param review_state Integer
      * @return Integer
