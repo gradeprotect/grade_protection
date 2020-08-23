@@ -21,4 +21,49 @@
     <select id="countByState" resultType="java.lang.Integer" parameterType="java.lang.Integer">
         select count(*) from sys_info_with_name where review_state = #{review_state}
     </select>
+
+    <select id="findByInfo" resultType="com.das.entity.SysInfoWithName">
+        select * from sys_info_with_name
+        <where>
+            <if test="param3 != null">
+                grade_protect_level = ${param3}
+            </if>
+            <if test="param4 != null and '%%'!=param4 ">
+                and name like #{param4}
+            </if>
+            <if test="param5!=null and param6!=null">
+                and date(import_time) between #{param5} and #{param6}
+            </if>
+            <if test="param7!=null and param8!=null">
+                and date(pass_time) between #{param7} and #{param8}
+            </if>
+            <if test="param9!=null">
+                and importer_id = #{param9}
+            </if>
+            and (review_state = 2 or review_state = 3)
+        </where>
+        limit #{param1},#{param2}
+    </select>
+
+    <select id="countByInfo" resultType="java.lang.Integer">
+        select count(*) from sys_info_with_name
+        <where>
+            <if test="param3 != null">
+                grade_protect_level = ${param3}
+            </if>
+            <if test="param4 != null and '%%'!=param4 ">
+                and name like #{param4}
+            </if>
+            <if test="param5!=null and param6!=null">
+                and date(import_time) between #{param5} and #{param6}
+            </if>
+            <if test="param7!=null and param8!=null">
+                and date(pass_time) between #{param7} and #{param8}
+            </if>
+            <if test="param9!=null">
+                and importer_id = #{param9}
+            </if>
+            and (review_state=2 or review_state=3)
+        </where>
+    </select>
 </mapper>

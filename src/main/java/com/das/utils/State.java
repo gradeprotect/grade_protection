@@ -14,6 +14,13 @@ public class State {
         return map;
     }
 
+    /**
+     * 打包数据
+     * @param obj 待发送的数据对象
+     * @param msg 提示信息
+     * @param state 状态码
+     * @return
+     */
     public static Map<String, Object> packet(Object obj,String msg,int state){
         Map<String,Object> ans = new HashMap<>(4);
         ans.put("data",obj);

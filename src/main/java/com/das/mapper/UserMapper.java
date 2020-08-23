@@ -80,4 +80,11 @@ public interface UserMapper {
      * @return
      */
     Integer deleteUserById(Integer id,Integer authority);
+
+    /**
+     * 通过id获取用户的email
+     * @param id Integer
+     * @return email
+     */
+    String getEmailById(Integer id);
 }

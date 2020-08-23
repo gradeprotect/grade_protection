@@ -3,6 +3,7 @@ package com.das.mapper;
 import com.das.entity.SysInfoWithName;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,4 +48,38 @@ public interface SysInfoWithNameMapper {
      * @return Integer
      */
     Integer countByState(Integer review_state);
+
+    /**
+     * 根据等保级别、录入时间区间、审核时间区间和系统名分页模糊查询系统信息
+     * @param pagenum 当前页码
+     * @param pagesize 每页数据数
+     * @param grade 等保级别
+     * @param name 系统名
+     * @param import_time1 导入时间1
+     * @param import_time2 导入时间2
+     * @param review_time1 审核时间1
+     * @param review_time2 审核时间2
+     * @param importer_id
+     * @return
+     */
+    List<SysInfoWithName> findByInfo(Integer pagenum, Integer pagesize, Integer grade, String name,
+                                     Date import_time1, Date import_time2, Date review_time1, Date review_time2,
+                                     Integer importer_id);
+
+    /**
+     *
+     * @param pagenum
+     * @param pagesize
+     * @param grade
+     * @param name
+     * @param import_time1
+     * @param import_time2
+     * @param review_time1
+     * @param review_time2
+     * @param importer_id
+     * @return
+     */
+    Integer countByInfo(Integer pagenum, Integer pagesize, Integer grade, String name,
+                        Date import_time1, Date import_time2, Date review_time1, Date review_time2,
+                        Integer importer_id);
 }

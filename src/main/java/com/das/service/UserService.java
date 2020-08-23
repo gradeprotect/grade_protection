@@ -45,4 +45,7 @@ public class UserService {
     public Integer deleteUserById(Integer id,Integer authority){
         return userMapper.deleteUserById(id,authority);
     }
+    public String getEmailById(Integer id){
+        return userMapper.getEmailById(id);
+    }
 }

@@ -55,6 +55,9 @@
     <select id="getUserByNameCount" resultType="Integer">
         select count(*) from user where name like concat('%',#{param1},'%') and isdelete is false
     </select>
+    <select id="getEmailById" resultType="java.lang.String" parameterType="java.lang.Integer">
+        select email from user where id = #{id}
+    </select>
     <update id="deleteUserById" parameterType="int">
         UPDATE user set isdelete=TRUE WHERE id=#{param1} AND authority>#{param2} AND isdelete=FALSE;
     </update>

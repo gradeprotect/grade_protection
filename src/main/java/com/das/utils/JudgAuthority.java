@@ -11,6 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class JudgAuthority {
 
+    /**
+     * 判断用户是否为超级管理员
+     * @param userService UserService
+     * @param token token
+     * @return boolean
+     */
     public static boolean isSuperAdmin(UserService userService,String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         int id = Integer.parseInt(tokenInfo.getClaim("id").asString());
@@ -22,6 +28,12 @@ public class JudgAuthority {
         }
     }
 
+    /**
+     * 判断用户是否有管理员权限
+     * @param userService UserService
+     * @param token token
+     * @return boolean
+     */
     public static boolean isAdmin(UserService userService,String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         int id = Integer.parseInt(tokenInfo.getClaim("id").asString());

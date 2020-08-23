@@ -27,6 +27,13 @@ public class ReadExcelContents {
 
     public static List<Integer> fail;
 
+    /**
+     * 读取excel文件 如果文件格式不合法则返回null
+     * @param multipartFile 文件流
+     * @param importer_id 导入员id
+     * @return 所有的合法数据信息
+     * @throws Exception
+     */
     public List<SysInfo> readExcel(MultipartFile multipartFile, Integer importer_id) throws Exception{
         List<SysInfo> content = new ArrayList<>();
         Workbook workbook = getWb(multipartFile);
@@ -57,8 +64,7 @@ public class ReadExcelContents {
                     SysInfo sysInfo = new SysInfo(null,String.valueOf(getCellFormatValue(row.getCell(0))),
                             new Date(), importer_id,null,1,null,null,
                             getCellFormatValue(row.getCell(1))==null?null:Integer.valueOf(String.valueOf(getCellFormatValue(row.getCell(1)))),
-                            departmentService.getIdByName(String.valueOf(getCellFormatValue(row.getCell(2)))),
-                            null,
+                            departmentService.getIdByName(String.valueOf(getCellFormatValue(row.getCell(2)))),null,
                             getCellFormatValue(row.getCell(3))==null?null:String.valueOf(getCellFormatValue(row.getCell(3))),
                             getCellFormatValue(row.getCell(4))==null?null:String.valueOf(getCellFormatValue(row.getCell(4))),
                             getCellFormatValue(row.getCell(5))==null?null:String.valueOf(getCellFormatValue(row.getCell(5))),

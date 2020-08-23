@@ -1,5 +1,6 @@
 package com.das.mapper;
 
+import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -34,4 +35,30 @@ public interface SysInfoMapper {
      * @param sysInfo SysInfo
      */
     void review(SysInfo sysInfo);
+
+    /**
+     * 获取相应等级的系统总数
+     * @param grade Integer
+     * @return Integer
+     */
+    Integer getGroupGradeNum(Integer grade);
+
+    /**
+     * 获取相应类别的安全产品数
+     * @param productType String
+     * @return Integer
+     */
+    Integer getDomesticProductNum(String productType);
+
+    /**
+     * 获取已录入信息的部门数
+     * @return Integer
+     */
+    Integer getCommittedNum();
+
+    /**
+     * 获取所有部门不同等级的等保设备情况
+     * @return List<DeptGradeStatus>
+     */
+    List<DeptGradeStatus> getAllDeptGradeStatus();
 }

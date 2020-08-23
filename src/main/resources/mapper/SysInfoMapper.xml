@@ -50,4 +50,26 @@
         delete from sys_info
         where id = #{id}
     </delete>
+
+    <select id="getGroupGradeNum" resultType="java.lang.Integer">
+        select count(*) from sys_info where grade_protect_level = #{grade} and review_state = 2
+    </select>
+
+    <select id="getDomesticProductNum" resultType="java.lang.Integer" parameterType="string">
+        <!--字符串传入列名时，要用美元符号$，且参数前加横岗_ 如${_parameter}，不能用${parameter}、${productType}或#{_parameter}等形式-->
+        select sum(${_parameter}) from sys_info
+    </select>
+
+    <select id="getCommittedNum" resultType="java.lang.Integer">
+        select count(distinct department_id) from sys_info
+    </select>
+
+    <select id="getAllDeptGradeStatus" resultType="com.das.entity.DeptGradeStatus">
+        select d.name as 'deptName',
+               SUM(case s.grade_protect_level when '2' then 1 else 0 end) as 'grade2num',
+               SUM(case s.grade_protect_level when '3' then 1 else 0 end) as 'grade3num',
+               SUM(case s.grade_protect_level when '4' then 1 else 0 end) as 'grade4num'
+        from sys_info as s, department as d where s.department_id = d.id
+        group by d.name
+    </select>
 </mapper>

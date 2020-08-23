@@ -1,6 +1,8 @@
 package com.das.service;
 
+import com.das.entity.DeptGradeStatus;
 import com.das.entity.SysInfo;
+import com.das.mapper.DepartmentsMapper;
 import com.das.mapper.SysInfoMapper;
 import com.das.utils.ReadExcelContents;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class SysInfoService {
     private SysInfoMapper sysInfoMapper;
     @Autowired
     private ReadExcelContents readExcelContents;
+    @Autowired
+    private DepartmentsMapper departmentsMapper;
 
     public void add(SysInfo sysInfo){
         //数据校验
@@ -46,16 +50,18 @@ public class SysInfoService {
 
     public List<SysInfo> addByExcel(MultipartFile multipartFile,Integer importer_id){
         List<SysInfo> sysInfos = new ArrayList<>();
+        //读取excel
         try{
             sysInfos = readExcelContents.readExcel(multipartFile,importer_id);
         }catch (Exception e){
             e.printStackTrace();
         }
+        //如果读取excel失败，则返回null
         if (sysInfos==null){
             return null;
         }
+        //读取成功，向数据库中插入
         for (SysInfo sysInfo : sysInfos) {
-            System.out.println(sysInfo.toString());
             sysInfoMapper.add(sysInfo);
         }
         return sysInfos;
@@ -73,4 +79,33 @@ public class SysInfoService {
         sysInfoMapper.review(sysInfo);
     }
 
+    public Integer getGroupGradeNum(Integer grade){
+        return sysInfoMapper.getGroupGradeNum(grade);
+    }
+
+    public Integer getDomesticProductNum(String productType){
+        return sysInfoMapper.getDomesticProductNum(productType);
+    }
+
+    public Map<String,Integer> getCommittedAndDepartmentNums(){
+        Map<String,Integer> map = new HashMap<>(2);
+        map.put("committed_num", sysInfoMapper.getCommittedNum());
+        map.put("total_dept_num", departmentsMapper.count());
+        return map;
+    }
+
+    public List<DeptGradeStatus> getAllDeptGradeStatus(){
+        List<String> deptNames = departmentsMapper.getNames();
+        List<DeptGradeStatus> allDeptGradeStatus = sysInfoMapper.getAllDeptGradeStatus();
+        // 清除已录入部门，获得未录入部门
+        for (DeptGradeStatus deptGradeStatus: allDeptGradeStatus) {
+            deptNames.remove(deptGradeStatus.getDeptName());
+        }
+        // 对未录入等保信息的部门进行补0
+        for(String deptName: deptNames){
+            DeptGradeStatus deptGradeStatus = new DeptGradeStatus(deptName, 0, 0, 0);
+            allDeptGradeStatus.add(deptGradeStatus);
+        }
+        return allDeptGradeStatus;
+    }
 }

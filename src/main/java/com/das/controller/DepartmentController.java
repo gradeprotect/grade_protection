@@ -24,6 +24,12 @@ public class DepartmentController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 分页获取部门
+     * @param pagenum 当前页码
+     * @param pagesize 每页的数据数
+     * @return Map<String, Object>
+     */
     @RequestMapping(method = RequestMethod.GET)
     public Map<String, Object> findAll(Integer pagenum, Integer pagesize){
         if (pagenum<=0){
@@ -35,17 +41,33 @@ public class DepartmentController {
         return State.packet(page,"获取成功",200);
     }
 
+    /**
+     * 获取所有部门信息
+     * @return Map<String,Object>
+     */
     @RequestMapping(method = RequestMethod.GET,path = "/getAll")
     public Map<String,Object> getAll(){
         return State.packet(departmentService.getAll(),"获取成功",200);
     }
 
+    /**
+     * 根据部门名删除部门
+     * @param id 部门id
+     * @return Map<String,Object>
+     */
     @RequestMapping(path = "/{id}",method = RequestMethod.DELETE)
     public Map<String,Object> deleteById(@PathVariable("id") Integer id){
         departmentService.deleteById(id);
         return State.packet(null,"删除成功",204);
     }
 
+    /**
+     * 根据部门名模糊查询分页获取部门信息
+     * @param name 部门名
+     * @param pagenum 当前页码
+     * @param pagesize 每页的数据数
+     * @return Map<String,Object>
+     */
     @RequestMapping(path = "/findByName/{name}",method = RequestMethod.GET)
     public Map<String,Object> findByName(@PathVariable String name,Integer pagenum,Integer pagesize){
         Page<Department> page = new Page<>(pagenum,pagesize);
@@ -54,16 +76,31 @@ public class DepartmentController {
         return State.packet(page,"获取成功",200);
     }
 
+    /**
+     * 根据部门id获取部门信息
+     * @param id 部门id
+     * @return Map<String,Object>
+     */
     @RequestMapping(path = "/findById/{id}",method = RequestMethod.GET)
     public Map<String,Object> findById(@PathVariable("id") Integer id){
         return State.packet(departmentService.findById(id), "获取成功", 200);
     }
 
+    /**
+     * 获取所有的部门名
+     * @return Map<String,Object>
+     */
     @RequestMapping(path = "/getNames",method = RequestMethod.GET)
     public Map<String,Object> getNames(){
         return State.packet(departmentService.getNames(),"获取成功",200);
     }
 
+    /**
+     * 添加系统信息
+     * @param department 部门信息
+     * @param token String
+     * @return Map<String,Object>
+     */
     @RequestMapping(method = RequestMethod.POST)
     public Map<String, Object> add(@RequestBody Department department,@RequestHeader("Authorization") String token){
         System.out.println(department);
@@ -75,6 +112,13 @@ public class DepartmentController {
         }
     }
 
+    /**
+     * 根据部门id修改部门信息
+     * @param department 部门信息
+     * @param id 部门id
+     * @param token
+     * @return Map<String,Object>
+     */
     @RequestMapping(path = "/{id}",method = RequestMethod.PUT)
     public Map<String, Object> update(@RequestBody Department department, @PathVariable("id") int id,@RequestHeader("Authorization") String token){
         if (!JudgAuthority.isAdmin(userService,token)){
