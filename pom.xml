@@ -94,7 +94,7 @@
 
     </dependencies>
 
-    <build>
+    <!--<build>
 
         <plugins>
             <plugin>
@@ -105,7 +105,7 @@
 
         <resources>
 
-        <!-- 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 -->
+        &lt;!&ndash; 如果不添加此节点mybatis的mapper.xml文件都会被漏掉。 &ndash;&gt;
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
@@ -128,6 +128,27 @@
         </resources>
 
 
+    </build>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.xlsx</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>

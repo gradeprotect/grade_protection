@@ -3,7 +3,7 @@
 <mapper namespace="com.das.mapper.SysInfoWithNameMapper">
 
     <select id="findAll" resultType="com.das.entity.SysInfoWithName">
-        select * from sys_info_with_name limit #{param1}, #{param2}
+        select * from sys_info_with_name where review_state &lt;&gt; 0 order by review_state limit #{param1}, #{param2}
     </select>
 
     <select id="findById" resultType="com.das.entity.SysInfoWithName" parameterType="java.lang.Integer">
@@ -11,7 +11,7 @@
     </select>
 
     <select id="count" resultType="java.lang.Integer">
-        select count(*) from sys_info_with_name
+        select count(*) from sys_info_with_name where review_state &lt;&gt; 0
     </select>
 
     <select id="findByState" resultType="com.das.entity.SysInfoWithName">

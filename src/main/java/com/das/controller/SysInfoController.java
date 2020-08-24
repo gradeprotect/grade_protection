@@ -83,14 +83,14 @@ public class SysInfoController {
 
     /**
      * 通过 excel 文件导入系统信息
-     * @param multipartFile MultipartFile
+     * @param file MultipartFile
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/excel",method = RequestMethod.POST)
-    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile multipartFile,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
+    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile file,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
-        List<SysInfo> sysInfos = sysInfoService.addByExcel(multipartFile,importer_id);
+        List<SysInfo> sysInfos = sysInfoService.addByExcel(file,importer_id);
         if (sysInfos == null || sysInfos.size() == 0){
             return State.packet(null,"批量导入失败",422);
         }

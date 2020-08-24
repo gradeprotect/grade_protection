@@ -56,9 +56,13 @@ public class DepartmentController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/{id}",method = RequestMethod.DELETE)
-    public Map<String,Object> deleteById(@PathVariable("id") Integer id){
-        departmentService.deleteById(id);
-        return State.packet(null,"删除成功",204);
+    public Map<String,Object> deleteById(@PathVariable("id") Integer id,@RequestHeader("Authorization") String token){
+        if (JudgAuthority.isAdmin(userService,token)){
+            departmentService.deleteById(id);
+            return State.packet(null,"删除成功",204);
+        }else {
+            return State.packet(null,"删除失败，您的权限不足！",403);
+        }
     }
 
     /**
@@ -103,7 +107,6 @@ public class DepartmentController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public Map<String, Object> add(@RequestBody Department department,@RequestHeader("Authorization") String token){
-        System.out.println(department);
         if (!JudgAuthority.isAdmin(userService,token)){
             return State.packet(null,"添加失败，您的权限不足",403);
         }else {
