@@ -113,6 +113,7 @@ public class SysInfoWithNameController {
     @RequestMapping(method = RequestMethod.GET,path = "/countByAuthority")
     public Map<String,Object> countByAuthority(@RequestHeader("Authorization") String token){
         List<Integer> ans = new ArrayList<>();
+        System.out.println("+++++++++++++"+token+"++++++++++++++++++");
         Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
         if (JudgAuthority.isAdmin(userService,token)){
             ans = sysInfoWithNameService.countByImporter("admin",importer_id);

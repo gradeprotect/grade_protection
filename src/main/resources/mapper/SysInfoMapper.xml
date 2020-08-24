@@ -22,7 +22,7 @@
 
     <update id="update" parameterType="com.das.entity.SysInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         update sys_info set name=#{name},import_time=#{import_time},importer_id=#{importer_id},review_state=#{review_state},
-                            grade_protect_level=#{grade_protect_level}, department_id=#{department_id},business_type=#{business_type},
+                            grade_protect_level=#{grade_protect_level} ,business_type=#{business_type},
                             business_desc=#{business_desc}, service_area=#{service_area}, service_obj=#{service_obj},
                             network=#{network}, sys_interconnect=#{sys_interconnect},safety_num=#{safety_num},
                             domestic_safety_num=#{domestic_safety_num}, network_num=#{network_num},

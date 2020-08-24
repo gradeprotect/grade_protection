@@ -6,13 +6,17 @@ import com.das.entity.*;
 import com.das.service.SysInfoService;
 import com.das.service.SysInfoWithNameService;
 import com.das.service.UserService;
+import com.das.thread.EmailThread;
 import com.das.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
@@ -53,9 +57,10 @@ public class SysInfoController {
         String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" + sysInfoWithName.getImporter() +
                 "提交了<b>" + sysInfo.getName() + "</b>,请及时审核!";
         List<String> emails = userService.getEmails();
-        for (String email: emails){
-            SendEmail.sendEmail("审核结果",message,email);
-        }
+
+        Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
+        emailThread.start();
+
         return State.packet(sysInfoWithName,"添加成功",201);
     }
 
@@ -96,9 +101,10 @@ public class SysInfoController {
         String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" +
                 user.getName() + "通过excel文件提交了<b>" + sysInfos.size() + "</b>个等级保护信息系统,请及时审核!";
         List<String> emails = userService.getEmails();
-        for (String email: emails){
-            SendEmail.sendEmail("审核结果",message,email);
-        }
+
+        Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
+        emailThread.start();
+
         return State.packet(map,"批量导入成功",201);
     }
 
@@ -119,9 +125,10 @@ public class SysInfoController {
         String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" + sysInfoWithName.getImporter() +
                 "修改了<b>" + sysInfo.getName() + "</b>,请及时审核!";
         List<String> emails = userService.getEmails();
-        for (String email: emails){
-            SendEmail.sendEmail("审核结果",message,email);
-        }
+
+        Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
+        emailThread.start();
+
         return State.packet(sysInfoWithName,"修改成功",200);
     }
 
@@ -158,7 +165,11 @@ public class SysInfoController {
                     "<br>您提交的 <b>" + sysInfoWithName.getName() + "</b> 未能通过审核，请修改后重新提交<br>" +
                     "未通过原因:<br>" + sysInfo.getFailure_reason();
             String email = userService.getEmailById(sysInfoWithName.getImporter_id());
-            SendEmail.sendEmail("审核结果",message,email);
+            List<String> emails = new ArrayList<>();
+            emails.add(email);
+
+            Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
+            emailThread.start();
 
             return State.packet(sysInfoWithName,"审核成功",200);
         }
@@ -227,5 +238,17 @@ public class SysInfoController {
     public Map<String, Object> getCarouselData (){
         List<CarouselData> list = sysInfoService.getCarouselData();
         return State.packet(list,"获取成功",200);
+    }
+
+    /**
+     * 下载excel模板文件
+     */
+    @RequestMapping(method = RequestMethod.GET,path = "/getExcel")
+    public Map<String,Object> getExcel(HttpServletResponse response) throws UnsupportedEncodingException {
+        if (FileDownload.downExcel(response,"模板.xlsx","D:/javaWorkspace/grade_protection/src/main/resources/static/模板.xlsx")){
+            return State.packet(null,"获取成功",200);
+        }else {
+            return State.packet(null,"请求失败，您请求的文件不存在",404);
+        }
     }
 }

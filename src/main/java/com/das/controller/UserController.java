@@ -36,6 +36,7 @@ public class UserController {
             map = State.packet(userDB,"登录成功", 200);
             //响应token
             map.put("token",token);
+            System.out.println("---------------"+token+"----------------");
         }catch (NullPointerException e){
             System.out.println("查找不到用户");
             map = State.packet(null, "用户名或密码错误", 422);
