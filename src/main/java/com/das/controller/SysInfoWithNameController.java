@@ -18,7 +18,7 @@ import java.util.*;
  * @date 2020-8-19
  */
 @RestController
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 360000)
 @RequestMapping(path = "/sysInfo")
 public class SysInfoWithNameController {
     @Autowired
@@ -78,11 +78,11 @@ public class SysInfoWithNameController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,path = "/findByInfo")
-    public Map<String,Object> findByInfo(Integer pagenum,Integer pagesize,Integer grade, String name,
+    public Map<String,Object> findByInfo(Integer pagenum,Integer pagesize,Integer grade, String keywords,
                                           String[] import_time, String[] review_time,
                                          @RequestHeader("Authorization") String token)
             throws ParseException {
-        name = name==null || "".equals(name)?null:name;
+        keywords = keywords==null || "".equals(keywords)?null:keywords;
         if (import_time == null || import_time.length == 0){
             import_time = new String[2];
             import_time[0] = null;
@@ -96,15 +96,15 @@ public class SysInfoWithNameController {
 
         Page<SysInfoWithName> page = new Page<>(pagenum,pagesize);
         if (JudgAuthority.isAdmin(userService,token)){
-            page.setRows(sysInfoWithNameService.findByInfo(pagenum,pagesize,grade,name,
+            page.setRows(sysInfoWithNameService.findByInfo(pagenum,pagesize,grade,keywords,
                     import_time[0],import_time[1],review_time[0],review_time[1],null));
-            page.setTotal(sysInfoWithNameService.countByInfo(pagenum,pagesize,grade,name,
+            page.setTotal(sysInfoWithNameService.countByInfo(pagenum,pagesize,grade,keywords,
                     import_time[0],import_time[1],review_time[0],review_time[1],null));
         }else {
             Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
-            page.setRows(sysInfoWithNameService.findByInfo(pagenum,pagesize,grade,name,
+            page.setRows(sysInfoWithNameService.findByInfo(pagenum,pagesize,grade,keywords,
                     import_time[0],import_time[1],review_time[0],review_time[1],importer_id));
-            page.setTotal(sysInfoWithNameService.countByInfo(pagenum,pagesize,grade,name,
+            page.setTotal(sysInfoWithNameService.countByInfo(pagenum,pagesize,grade,keywords,
                     import_time[0],import_time[1],review_time[0],review_time[1],importer_id));
         }
         return State.packet(page,"获取成功",200);

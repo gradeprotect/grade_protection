@@ -72,11 +72,12 @@ public class DepartmentController {
      * @param pagesize 每页的数据数
      * @return Map<String,Object>
      */
-    @RequestMapping(path = "/findByName/{name}",method = RequestMethod.GET)
-    public Map<String,Object> findByName(@PathVariable String name,Integer pagenum,Integer pagesize){
+    @RequestMapping(path = "/findByName",method = RequestMethod.GET)
+    public Map<String,Object> findByName(Integer pagenum,Integer pagesize,String query){
         Page<Department> page = new Page<>(pagenum,pagesize);
-        page.setRows(departmentService.findByName(name,pagenum,pagesize));
-        page.setTotal(departmentService.countByName(name));
+        query = query == null || "".equals(query)?null:"%"+query+"%";
+        page.setRows(departmentService.findByName(query,pagenum,pagesize));
+        page.setTotal(departmentService.countByName(query));
         return State.packet(page,"获取成功",200);
     }
 

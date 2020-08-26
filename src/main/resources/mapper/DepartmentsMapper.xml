@@ -27,11 +27,24 @@
     </select>
 
     <select id="findByName" resultType="com.das.entity.Department">
-        select * from department where name like concat('%',#{name},'%') and isdelete is false limit #{param2},#{param3}
+        select * from department
+        <where>
+            <if test="param1!=null">
+                name like #{param1}
+            </if>
+            and isdelete is false
+        </where>
+        limit #{param2},#{param3}
     </select>
 
     <select id="countByName" resultType="java.lang.Integer">
-        select count(*) from department where name like concat('%', #{name},'%') and isdelete is false
+        select count(*) from department
+        <where>
+            <if test="name!=null">
+                name like #{name}
+            </if>
+        and isdelete is false
+        </where>
     </select>
 
     <select id="getIdByName" resultType="java.lang.Integer">

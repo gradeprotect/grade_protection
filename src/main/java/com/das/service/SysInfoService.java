@@ -6,14 +6,12 @@ import com.das.entity.SysInfo;
 import com.das.mapper.DepartmentsMapper;
 import com.das.mapper.SysInfoMapper;
 import com.das.utils.ReadExcelContents;
+import com.das.utils.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 许文滨
@@ -27,6 +25,16 @@ public class SysInfoService {
     private ReadExcelContents readExcelContents;
     @Autowired
     private DepartmentsMapper departmentsMapper;
+    @Autowired
+    private SysInfoService sysInfoService;
+
+    public List<SysInfo> getAll(){
+        return sysInfoMapper.getAll();
+    }
+
+    public void addAnnex(String annex,Integer id){
+        sysInfoMapper.addAnnex(annex,id);
+    }
 
     public void add(SysInfo sysInfo){
         //数据校验
@@ -61,6 +69,7 @@ public class SysInfoService {
         if (sysInfos==null){
             return null;
         }
+
         //读取成功，向数据库中插入
         for (SysInfo sysInfo : sysInfos) {
             sysInfoMapper.add(sysInfo);

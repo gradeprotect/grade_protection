@@ -36,7 +36,6 @@ public class UserController {
             map = State.packet(userDB,"登录成功", 200);
             //响应token
             map.put("token",token);
-            System.out.println("---------------"+token+"----------------");
         }catch (NullPointerException e){
             System.out.println("查找不到用户");
             map = State.packet(null, "用户名或密码错误", 422);
@@ -127,11 +126,16 @@ public class UserController {
     @GetMapping("/name")
     public Map<String,Object> getUserByName(String keyword,Integer pagenum,Integer pagesize){
         Page<User> page = new Page<>();
-        List<User> userByName = userService.getUserByName(keyword,pagesize*(pagenum-1),pagesize);
+        List<User> userList;
+        if(keyword==null||keyword.equals("")){
+            userList = userService.getUserList(pagenum, pagesize);
+        }else{
+            userList = userService.getUserByName(keyword,pagesize*(pagenum-1),pagesize);
+        }
         page.setPageNum(pagenum);
         page.setPageSize(pagesize);
         page.setTotal(userService.getUserByNameCount(keyword));
-        page.setRows(userByName);
+        page.setRows(userList);
         Map<String, Object> map = State.packet(page, "获取成功", 200);
         return map;
     }

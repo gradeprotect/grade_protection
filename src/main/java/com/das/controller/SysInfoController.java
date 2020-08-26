@@ -1,6 +1,5 @@
 package com.das.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.das.entity.*;
 import com.das.service.SysInfoService;
@@ -12,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.util.*;
 
 /**
@@ -25,7 +21,7 @@ import java.util.*;
  * @date 2020-8-19
  */
 @RestController
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(maxAge = 360000)
 @RequestMapping(path = "/sysInfo")
 public class SysInfoController {
     @Autowired
@@ -36,50 +32,67 @@ public class SysInfoController {
     private UserService userService;
 
     /**
+     * 导入系统信息附件
+     * @param id
+     * @param file
+     * @return Map<String,Object>
+     */
+    @RequestMapping(method = RequestMethod.POST,path = "/annex/{id}")
+    public Map<String,Object> addAnnex(@RequestParam("file") MultipartFile file, @PathVariable("id") Integer id) throws IOException {
+        String annex = FileUpload.upload(file);
+        sysInfoService.addAnnex(annex,id);
+        return State.packet(annex,"附件上传成功",201);
+    }
+
+    /**
+     * 根据id下载附件
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET,path = "/annex/{id}")
+    public Map<String,Object> downAnnex(@PathVariable("id") Integer id,HttpServletResponse response) throws UnsupportedEncodingException {
+        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(id);
+        String annex = sysInfoWithName.getAnnex();
+        if (annex == null || "".equals(annex)){
+            return State.packet(null,"请求失败，您请求的文件不存在",404);
+        }else {
+            String[] annexs = annex.split(".");
+            if (FileDownload.downFile(response,"附件."+annexs[annexs.length-1],sysInfoWithName.getAnnex())){
+                return State.packet(null,"获取成功",200);
+            }else {
+                return State.packet(null,"请求失败，您请求的文件不存在",404);
+            }
+        }
+    }
+
+    /**
      * 导入系统信息
-     * @param sysInfoWithAnnex SysInfoWithAnnex
-     * @param token String
+     * @param sysInfo SysInfo
      * @return Map<String,Object>
      */
     @RequestMapping(method = RequestMethod.POST)
-    public Map<String,Object> add(@ModelAttribute SysInfoWithAnnex sysInfoWithAnnex,@RequestHeader("Authorization") String token) throws IOException, GeneralSecurityException, MessagingException {
-        JSONObject jo = JSONObject.parseObject(sysInfoWithAnnex.getSysInfo());
-        SysInfo sysInfo = (SysInfo) JSONObject.toJavaObject(jo,SysInfo.class);
-        System.out.println(sysInfo);
+    public Map<String,Object> add(@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
-        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
-        String annexPath = FileUpload.upload(sysInfoWithAnnex.getMultipartFile());
         sysInfo.setImporter_id(importer_id);
         sysInfo.setImport_time(new Date());
-        sysInfo.setAnnex(annexPath);
+        //根据部门名和系统名判断该系统是否在数据库中
+        List<SysInfo> sysInfos = sysInfoService.getAll();
+        Map<Integer,Set<String>> judgment = new HashMap<>(sysInfos.size()/4);
+        for (SysInfo sysInfo1:sysInfos){
+            Set<String> tmp = judgment.getOrDefault(sysInfo1.getDepartment_id(),new HashSet<>());
+            tmp.add(sysInfo1.getName());
+            judgment.put(sysInfo1.getDepartment_id(),tmp);
+        }
+        Set<String> tmp = judgment.getOrDefault(sysInfo.getDepartment_id(),new HashSet<>());
+        //如果该系统在数据中，则返回添加失败
+        if (!tmp.isEmpty() && !tmp.add(sysInfo.getName())){
+            return State.packet(null,"该系统已被添加！",422);
+        }
+
         sysInfoService.add(sysInfo);
-        String message = "[等级保护信息管理系统]<br>" + new Date().toString() + "<br>" + sysInfoWithName.getImporter() +
-                "提交了<b>" + sysInfo.getName() + "</b>,请及时审核!";
-        List<String> emails = userService.getEmails();
-
-        Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
-        emailThread.start();
-
+        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
         return State.packet(sysInfoWithName,"添加成功",201);
     }
-
-//    /**
-//     * 导入系统信息
-//     * @param sysInfo SysInfo
-//     * @return Map<String,Object>
-//     */
-//    @RequestMapping(method = RequestMethod.POST)
-//    public Map<String,Object> add(@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token){
-//        System.out.println(sysInfo);
-//        DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
-//        Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
-//        sysInfo.setImporter_id(importer_id);
-//        sysInfo.setImport_time(new Date());
-//        sysInfoService.add(sysInfo);
-//        SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(sysInfo.getId());
-//        return State.packet(sysInfoWithName,"添加成功",201);
-//    }
 
     /**
      * 通过 excel 文件导入系统信息
@@ -87,12 +100,12 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/excel",method = RequestMethod.POST)
-    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile file,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
+    public Map<String,Object> addByExcel(@RequestParam("file") MultipartFile file,@RequestHeader("Authorization") String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         List<SysInfo> sysInfos = sysInfoService.addByExcel(file,importer_id);
         if (sysInfos == null || sysInfos.size() == 0){
-            return State.packet(null,"批量导入失败",422);
+            return State.packet(null,"导入失败",422);
         }
         Map<String,Object> map = new HashMap<>(2);
         map.put("success",sysInfos);
@@ -105,7 +118,7 @@ public class SysInfoController {
         Thread emailThread = new Thread(new EmailThread("安恒信息等级保护信息管理系统",message,emails));
         emailThread.start();
 
-        return State.packet(map,"批量导入成功",201);
+        return State.packet(map,"导入成功",201);
     }
 
     /**
@@ -115,7 +128,7 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/{id}",method = RequestMethod.PUT)
-    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
+    public Map<String,Object> update(@RequestBody SysInfo sysInfo,@PathVariable("id") int id,@RequestHeader("Authorization") String token){
         DecodedJWT tokenInfo = JwtUtils.getTokenInfo(token);
         Integer importer_id = Integer.parseInt(tokenInfo.getClaim("id").asString());
         sysInfo.setId(id);
@@ -150,7 +163,7 @@ public class SysInfoController {
      * @return Map<String,Object>
      */
     @RequestMapping(path = "/review/{id}",method = RequestMethod.PUT)
-    public Map<String,Object> review(@PathVariable("id") int id,@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token) throws GeneralSecurityException, MessagingException {
+    public Map<String,Object> review(@PathVariable("id") int id,@RequestBody SysInfo sysInfo,@RequestHeader("Authorization") String token) {
         if (!JudgAuthority.isAdmin(userService,token)){
             return State.packet(null,"审核失败，您没有权限",403);
         }else {
@@ -245,7 +258,7 @@ public class SysInfoController {
      */
     @RequestMapping(method = RequestMethod.GET,path = "/getExcel")
     public Map<String,Object> getExcel(HttpServletResponse response) throws UnsupportedEncodingException {
-        if (FileDownload.downExcel(response,"模板.xlsx","D:/javaWorkspace/grade_protection/src/main/resources/static/模板.xlsx")){
+        if (FileDownload.downFile(response,"模板.xlsx","D:/javaWorkspace/grade_protection/src/main/resources/static/模板.xlsx")){
             return State.packet(null,"获取成功",200);
         }else {
             return State.packet(null,"请求失败，您请求的文件不存在",404);

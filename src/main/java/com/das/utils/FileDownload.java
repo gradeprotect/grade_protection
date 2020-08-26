@@ -13,7 +13,7 @@ public class FileDownload {
      * 文件下载
      * @return
      */
-    public static boolean downExcel(HttpServletResponse response,String filename,String filepath) throws UnsupportedEncodingException {
+    public static boolean downFile(HttpServletResponse response,String filename,String filepath) throws UnsupportedEncodingException {
         // 如果文件名不为空，则进行下载
         File file = new File(filepath);
         // 如果文件存在，则进行下载

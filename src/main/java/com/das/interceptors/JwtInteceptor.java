@@ -20,10 +20,13 @@ import java.util.Map;
 public class JwtInteceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+        response.setHeader("Access-Control-Max-Age", 360000+"");
         Map<String,Object> map = new HashMap<>(16);
         //获取请求头中的令牌
         String token = request.getHeader("Authorization");
-        System.out.println(token);
         try{
             //验证令牌
             JwtUtils.verify(token);
@@ -42,7 +45,6 @@ public class JwtInteceptor implements HandlerInterceptor {
             e.printStackTrace();
             map = State.packet(null,"失效的payload异常",403);
         }catch (Exception e){
-            e.printStackTrace();
             map = State.packet(null,"无效签名",403);
         }
         //将map转位json

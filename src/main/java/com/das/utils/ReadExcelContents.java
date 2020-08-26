@@ -2,6 +2,7 @@ package com.das.utils;
 
 import com.das.entity.SysInfo;
 import com.das.service.DepartmentService;
+import com.das.service.SysInfoService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,6 +25,8 @@ import java.util.*;
 public class ReadExcelContents {
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private SysInfoService sysInfoService;
 
     public static List<Integer> fail;
 
@@ -50,6 +53,14 @@ public class ReadExcelContents {
                 return null;
             }else {
                 fail = new ArrayList<>();
+                //根据部门名和系统名判断该系统是否在数据库中
+                List<SysInfo> sysInfos = sysInfoService.getAll();
+                Map<Integer, Set<String>> judgment = new HashMap<>(sysInfos.size()/4);
+                for (SysInfo sysInfo:sysInfos){
+                    Set<String> tmp = judgment.getOrDefault(sysInfo.getDepartment_id(),new HashSet<>());
+                    tmp.add(sysInfo.getName());
+                    judgment.put(sysInfo.getDepartment_id(),tmp);
+                }
                 //读取数据
                 for (int i=1;i<=rowNum;i++){
                     row = sheet.getRow(i);
@@ -59,6 +70,12 @@ public class ReadExcelContents {
                             getCellFormatValue(row.getCell(0)) == null){
                         fail.add(i+1);
                         continue;
+                    }else {
+                        Set<String> tmp = judgment.getOrDefault(departmentService.getIdByName(String.valueOf(getCellFormatValue(row.getCell(2)))),new HashSet<>());
+                        if (!tmp.add(String.valueOf(getCellFormatValue(row.getCell(0))))){
+                            fail.add(i+1);
+                            continue;
+                        }
                     }
                     //根据excel中的信息构建SysInfo对象
                     SysInfo sysInfo = new SysInfo(null,String.valueOf(getCellFormatValue(row.getCell(0))),

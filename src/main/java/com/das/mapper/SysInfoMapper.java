@@ -20,6 +20,19 @@ public interface SysInfoMapper {
     void add(SysInfo sysInfo);
 
     /**
+     * 添加附件路径
+     * @param annex String
+     * @param id Integer
+     */
+    void addAnnex(String annex,Integer id);
+
+    /**
+     * 获取所有信息
+     * @return
+     */
+    List<SysInfo> getAll();
+
+    /**
      * 修改系统信息
      * @param sysInfo SysInfo
      */

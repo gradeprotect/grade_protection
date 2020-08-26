@@ -47,6 +47,8 @@ public interface DepartmentsMapper {
     /**
      * 通过名字查询部门信息
      * @param name String
+     * @param pagesize Integer
+     * @param pagenum Integer
      * @return Department
      */
     List<Department> findByName(String name,Integer pagenum,Integer pagesize);

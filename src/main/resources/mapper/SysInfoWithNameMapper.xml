@@ -40,7 +40,8 @@
             <if test="param9!=null">
                 and importer_id = #{param9}
             </if>
-            and (review_state = 2 or review_state = 3)
+        and review_state &lt;&gt; 0
+        order by review_state
         </where>
         limit #{param1},#{param2}
     </select>
@@ -63,7 +64,7 @@
             <if test="param9!=null">
                 and importer_id = #{param9}
             </if>
-            and (review_state=2 or review_state=3)
+            and review_state &lt;&gt; 0
         </where>
     </select>
 

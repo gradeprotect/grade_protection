@@ -40,6 +40,10 @@
         where id = #{id}
     </update>
 
+    <update id="addAnnex">
+        update sys_info set annex = #{param1} where id = #{param2}
+    </update>
+
     <update id="review" parameterType="com.das.entity.SysInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         update sys_info set reviewer_id=#{reviewer_id},review_state=#{review_state},failure_reason=#{failure_reason},
                             pass_time=#{pass_time}
@@ -81,5 +85,8 @@
         from sys_info as s, user as u, department as d
         where s.review_state = 1 and s.importer_id = u.id and s.department_id = d.id
         order by s.import_time desc
+    </select>
+    <select id="getAll" resultType="com.das.entity.SysInfo">
+        select * from sys_info
     </select>
 </mapper>
