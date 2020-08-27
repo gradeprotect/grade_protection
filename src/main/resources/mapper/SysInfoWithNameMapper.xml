@@ -68,12 +68,18 @@
         </where>
     </select>
 
-    <select id="countByImporter" resultType="java.lang.Integer">
+    <select id="countByImporter1" resultType="java.lang.Integer">
         select count(*) from sys_info_with_name
-        where (review_state = 1 or review_state = 2)
+        where review_state = 1
         <if test="param1!='admin'">
             and importer_id = #{param2}
         </if>
-        group by review_state
+    </select>
+    <select id="countByImporter2" resultType="java.lang.Integer">
+        select count(*) from sys_info_with_name
+        where review_state = 2
+        <if test="param1!='admin'">
+            and importer_id = #{param2}
+        </if>
     </select>
 </mapper>

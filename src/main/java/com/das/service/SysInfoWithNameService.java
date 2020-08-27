@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,10 @@ public class SysInfoWithNameService {
     }
 
     public List<Integer> countByImporter(String authority,Integer id){
-        return sysInfoWithNameMapper.countByImporter(authority,id);
+        List<Integer> ans = new ArrayList<>();
+        ans.add(sysInfoWithNameMapper.countByImporter1(authority,id));
+        ans.add(sysInfoWithNameMapper.countByImporter2(authority,id));
+        return ans;
     }
 
     public SysInfoWithName findById(Integer id){

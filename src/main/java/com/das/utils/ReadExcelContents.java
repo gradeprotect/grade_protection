@@ -164,10 +164,6 @@ public class ReadExcelContents {
         if (colNum != 36) {
             return false;
         }
-//        for (int i=0;i<35;i++){
-//            System.out.println("----------------------"+getCellFormatValue(row.getCell(i))+"-----------------");
-//        }
-//        System.out.println("-------------------------------------------");
         return "系统名称".equals(getCellFormatValue(row.getCell(0))) &&
                 "等保级别".equals(getCellFormatValue(row.getCell(1))) &&
                 "部门名称".equals(getCellFormatValue(row.getCell(2))) &&

@@ -71,7 +71,7 @@ public class SysInfoWithNameController {
      * @param pagenum 当前页码
      * @param pagesize 每页数据数
      * @param grade 等保级别
-     * @param name 系统名
+     * @param keywords 系统名
      * @param import_time 导入时间
      * @param review_time 审核时间
      * @param token String
@@ -113,7 +113,6 @@ public class SysInfoWithNameController {
     @RequestMapping(method = RequestMethod.GET,path = "/countByAuthority")
     public Map<String,Object> countByAuthority(@RequestHeader("Authorization") String token){
         List<Integer> ans = new ArrayList<>();
-        System.out.println("+++++++++++++"+token+"++++++++++++++++++");
         Integer importer_id = Integer.parseInt(JwtUtils.getTokenInfo(token).getClaim("id").asString());
         if (JudgAuthority.isAdmin(userService,token)){
             ans = sysInfoWithNameService.countByImporter("admin",importer_id);

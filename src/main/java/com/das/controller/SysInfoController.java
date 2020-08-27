@@ -8,10 +8,12 @@ import com.das.service.UserService;
 import com.das.thread.EmailThread;
 import com.das.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -49,13 +51,13 @@ public class SysInfoController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET,path = "/annex/{id}")
-    public Map<String,Object> downAnnex(@PathVariable("id") Integer id,HttpServletResponse response) throws UnsupportedEncodingException {
+    public Map<String,Object> downAnnex(@PathVariable("id") Integer id,HttpServletResponse response) throws UnsupportedEncodingException, FileNotFoundException {
         SysInfoWithName sysInfoWithName = sysInfoWithNameService.findById(id);
         String annex = sysInfoWithName.getAnnex();
         if (annex == null || "".equals(annex)){
             return State.packet(null,"请求失败，您请求的文件不存在",404);
         }else {
-            String[] annexs = annex.split(".");
+            String[] annexs = annex.split("\\.");
             if (FileDownload.downFile(response,"附件."+annexs[annexs.length-1],sysInfoWithName.getAnnex())){
                 return State.packet(null,"获取成功",200);
             }else {
@@ -257,8 +259,8 @@ public class SysInfoController {
      * 下载excel模板文件
      */
     @RequestMapping(method = RequestMethod.GET,path = "/getExcel")
-    public Map<String,Object> getExcel(HttpServletResponse response) throws UnsupportedEncodingException {
-        if (FileDownload.downFile(response,"模板.xlsx","D:/javaWorkspace/grade_protection/src/main/resources/static/模板.xlsx")){
+    public Map<String,Object> getExcel(HttpServletResponse response) throws UnsupportedEncodingException, FileNotFoundException {
+        if (FileDownload.downFile(response,"模板.xlsx", ResourceUtils.CLASSPATH_URL_PREFIX +"static/模板.xlsx")){
             return State.packet(null,"获取成功",200);
         }else {
             return State.packet(null,"请求失败，您请求的文件不存在",404);
